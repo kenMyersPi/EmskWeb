@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Enmascarados | Postulación Moderador</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Botón de Staff (oculto para usuarios normales) -->
+    <div class="staff-corner">
+        <button id="staffLoginBtn" class="staff-btn" title="Acceso Staff">
+            <span class="staff-icon">🛡️</span>
+            <span class="staff-text">Staff</span>
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="mask-icon">🎭</div>
+                <h1>Los Enmascarados</h1>
+            </div>
+            <p class="subtitle">Postulación para Moderador</p>
+            <p class="header-description">Completa el siguiente formulario para postularte como moderador. Todas las respuestas serán revisadas por nuestro equipo.</p>
+        </header>
+
+        <!-- Barra de progreso -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="progress-steps">
+                <div class="step active" data-step="1">1</div>
+                <div class="step" data-step="2">2</div>
+                <div class="step" data-step="3">3</div>
+                <div class="step" data-step="4">4</div>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <main class="main-content">
+            <form id="postulacionForm" class="application-form">
+                <!-- Sección 1: Información Personal -->
+                <div class="form-section active" data-section="1">
+                    <div class="section-header">
+                        <span class="section-number">01</span>
+                        <h2>Información Personal</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="discordNick">
+                            <span class="label-icon">👤</span>
+                            Nick de Discord + Usuario *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="discordNick" 
+                            name="discordNick" 
+                            placeholder="Ejemplo: Usuario#1234 o usuario"
+                            required
+                            autocomplete="off"
+                        >
+                        <span class="helper-text">Tu nombre de usuario completo en Discord</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="discordId">
+                            <span class="label-icon">🆔</span>
+                            ID de Discord *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="discordId" 
+                            name="discordId" 
+                            placeholder="Ejemplo: 123456789012345678"
+                            required
+                            pattern="[0-9]{17,19}"
+                        >
+                        <span class="helper-text">Activa el modo desarrollador en Discord para copiar tu ID</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">
+                            <span class="label-icon">🎂</span>
+                            Edad *
+                        </label>
+                        <input 
+                            type="number" 
+                            id="age" 
+                            name="age" 
+                            min="13" 
+                            max="99"
+                            placeholder="Tu edad"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timezone">
+                            <span class="label-icon">🌍</span>
+                            Zona Horaria *
+                        </label>
+                        <select id="timezone" name="timezone" required>
+                            <option value="">Selecciona tu zona horaria...</option>
+                            <option value="GMT-12">GMT-12 (Baker Island)</option>
+                            <option value="GMT-11">GMT-11 (Samoa Americana)</option>
+                            <option value="GMT-10">GMT-10 (Hawaii)</option>
+                            <option value="GMT-9">GMT-9 (Alaska)</option>
+                            <option value="GMT-8">GMT-8 (Pacífico)</option>
+                            <option value="GMT-7">GMT-7 (Montaña)</option>
+                            <option value="GMT-6">GMT-6 (Centro)</option>
+                            <option value="GMT-5">GMT-5 (Este)</option>
+                            <option value="GMT-4">GMT-4 (Atlántico)</option>
+                            <option value="GMT-3">GMT-3 (Brasilia, Argentina)</option>
+                            <option value="GMT-2">GMT-2 (Atlántico Medio)</option>
+                            <option value="GMT-1">GMT-1 (Azores)</option>
+                            <option value="GMT+0">GMT+0 (Londres)</option>
+                            <option value="GMT+1">GMT+1 (Europa Central)</option>
+                            <option value="GMT+2">GMT+2 (Europa Este)</option>
+                            <option value="GMT+3">GMT+3 (Moscú)</option>
+                            <option value="GMT+4">GMT+4 (Golfo)</option>
+                            <option value="GMT+5">GMT+5 (Pakistán)</option>
+                            <option value="GMT+6">GMT+6 (Bangladesh)</option>
+                            <option value="GMT+7">GMT+7 (Tailandia)</option>
+                            <option value="GMT+8">GMT+8 (China, Filipinas)</option>
+                            <option value="GMT+9">GMT+9 (Japón)</option>
+                            <option value="GMT+10">GMT+10 (Australia Este)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="languages">
+                            <span class="label-icon">🗣️</span>
+                            Idiomas que hablas *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="languages" 
+                            name="languages" 
+                            placeholder="Ejemplo: Español (nativo), Inglés (intermedio)"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Sección 2: Experiencia -->
+                <div class="form-section" data-section="2">
+                    <div class="section-header">
+                        <span class="section-number">02</span>
+                        <h2>Experiencia como Moderador</h2>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hasExperience">
+                            <span class="label-icon">🛡️</span>
+                            ¿Tienes experiencia previa como moderador? *
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="hasExperience" value="si" required>
+                                <span class="radio-custom"></span>
+                                Sí, tengo experiencia
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="hasExperience" value="no">
+                                <span class="radio-custom"></span>
+                                No, sería mi primera vez
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group experience-details" id="experienceDetails">
+                        <label for="experienceDescription">
+                            <span class="label-icon">📝</span>
+                            Describe tu experiencia como moderador *
+                        </label>
+                        <textarea 
+                            id="experienceDescription" 
+                            name="experienceDescription" 
+                            rows="5"
+                            placeholder="Cuéntanos detalladamente:&#10;• ¿En qué servidores has sido moderador?&#10;• ¿Cuánto tiempo en cada uno?&#10;• ¿Cuántos miembros tenían?&#10;• ¿Qué herramientas usabas?&#10;• ¿Manejaste situaciones difíciles?"
+                        ></textarea>
+                        <span class="char-count">0/1500 caracteres</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="moderationTools">
+                            <span class="label-icon">🔧</span>
+                            ¿Qué herramientas de moderación conoces?
+                        </label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="tools" value="discord_builtin">
+                                <span class="checkbox-custom"></span>
+                                Moderación nativa de Discord
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="tools" value="mee6">
+                                <span class="checkbox-custom"></span>
+                                MEE6
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="tools" value="dyno">
+                                <span class="checkbox-custom"></span>
+                                Dyno
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="tools" value="carlbot">
+                                <span class="checkbox-custom"></span>
+                                Carl-bot
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="tools" value="automod">
+                                <span class="checkbox-custom"></span>
+                                AutoMod
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="tools" value="custom_bots">
+                                <span class="checkbox-custom"></span>
+                                Bots personalizados
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="availability">
+                            <span class="label-icon">⏰</span>
+                            ¿Cuánto tiempo puedes dedicar al día? *
+                        </label>
+                        <select id="availability" name="availability" required>
+                            <option value="">Selecciona tu disponibilidad...</option>
+                            <option value="1-2">1-2 horas al día</option>
+                            <option value="2-4">2-4 horas al día</option>
+                            <option value="4-6">4-6 horas al día</option>
+                            <option value="6-8">6-8 horas al día</option>
+                            <option value="8+">Más de 8 horas al día</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sección 3: Escenarios Hipotéticos -->
+                <div class="form-section" data-section="3">
+                    <div class="section-header">
+                        <span class="section-number">03</span>
+                        <h2>Escenarios y Conocimientos</h2>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scenario1">
+                            <span class="label-icon">💭</span>
+                            Escenario 1: Un miembro insulta a otro en el chat general. ¿Qué harías? *
+                        </label>
+                        <textarea 
+                            id="scenario1" 
+                            name="scenario1" 
+                            rows="4"
+                            placeholder="Describe paso a paso cómo manejarías esta situación..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scenario2">
+                            <span class="label-icon">💭</span>
+                            Escenario 2: Llega una oleada de spam/raids al servidor. ¿Cómo actuarías? *
+                        </label>
+                        <textarea 
+                            id="scenario2" 
+                            name="scenario2" 
+                            rows="4"
+                            placeholder="Describe tu plan de acción..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="discordRules">
+                            <span class="label-icon">📜</span>
+                            ¿Conoces las Términos de Servicio y Directrices de Comunidad de Discord? *
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="discordRules" value="si_detallado" required>
+                                <span class="radio-custom"></span>
+                                Sí, las conozco en detalle
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="discordRules" value="si_basico">
+                                <span class="radio-custom"></span>
+                                Sí, lo básico
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="discordRules" value="no">
+                                <span class="radio-custom"></span>
+                                No mucho, pero estoy dispuesto a aprender
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección 4: Sobre ti -->
+                <div class="form-section" data-section="4">
+                    <div class="section-header">
+                        <span class="section-number">04</span>
+                        <h2>Sobre Ti</h2>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="motivation">
+                            <span class="label-icon">💪</span>
+                            ¿Por qué quieres ser moderador en Los Enmascarados? *
+                        </label>
+                        <textarea 
+                            id="motivation" 
+                            name="motivation" 
+                            rows="4"
+                            placeholder="Cuéntanos tus motivaciones y qué puedes aportar al equipo..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="strengths">
+                            <span class="label-icon">⭐</span>
+                            ¿Cuáles son tus principales fortalezas para este rol? *
+                        </label>
+                        <textarea 
+                            id="strengths" 
+                            name="strengths" 
+                            rows="3"
+                            placeholder="Ejemplo: Paciencia, comunicación, resolución de conflictos..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weaknesses">
+                            <span class="label-icon">🌱</span>
+                            ¿Qué aspectos te gustaría mejorar?
+                        </label>
+                        <textarea 
+                            id="weaknesses" 
+                            name="weaknesses" 
+                            rows="3"
+                            placeholder="Sé honesto, todos tenemos áreas de mejora..."
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additionalInfo">
+                            <span class="label-icon">✨</span>
+                            ¿Algo más que quieras agregar?
+                        </label>
+                        <textarea 
+                            id="additionalInfo" 
+                            name="additionalInfo" 
+                            rows="3"
+                            placeholder="Cualquier información adicional que consideres relevante..."
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label terms">
+                            <input type="checkbox" id="termsAccepted" name="termsAccepted" required>
+                            <span class="checkbox-custom"></span>
+                            Acepto que mis datos serán revisados por el equipo de <strong>Los Enmascarados</strong> y entiendo que esta postulación no garantiza un puesto como moderador. *
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Navegación del formulario -->
+                <div class="form-navigation">
+                    <button type="button" class="nav-btn prev-btn" id="prevBtn" style="display: none;">
+                        ← Anterior
+                    </button>
+                    <button type="button" class="nav-btn next-btn" id="nextBtn">
+                        Siguiente →
+                    </button>
+                    <button type="submit" class="submit-btn" id="submitBtn" style="display: none;">
+                        <span class="btn-text">Enviar Postulación</span>
+                        <span class="btn-icon">📤</span>
+                    </button>
+                </div>
+
+                <!-- Mensajes de estado -->
+                <div id="messageContainer" class="message-container hidden"></div>
+            </form>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2024 Los Enmascarados. Este formulario es confidencial.</p>
+            <p class="footer-note">🔒 Tus datos serán revisados únicamente por el equipo de administración</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
