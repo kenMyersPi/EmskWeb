@@ -35,10 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // NAVEGACIÓN
     // ============================================
     function updateNavigation() {
-        // Mostrar/ocultar botón "Anterior"
         prevBtn.style.display = currentSection === 1 ? 'none' : 'inline-flex';
         
-        // Mostrar/ocultar "Siguiente" o "Enviar"
         if (currentSection === totalSections) {
             nextBtn.style.display = 'none';
             submitBtn.style.display = 'flex';
@@ -47,11 +45,9 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.style.display = 'none';
         }
         
-        // Actualizar barra de progreso
         const progress = ((currentSection - 1) / (totalSections - 1)) * 100;
         progressBar.style.width = progress + '%';
         
-        // Actualizar círculos de pasos
         steps.forEach((step, index) => {
             step.classList.remove('active', 'completed');
             if (index + 1 === currentSection) step.classList.add('active');
@@ -115,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
         clearErrors();
         let valid = true;
         
-        // Sección 1: Información Personal
         if (section === 1) {
             const nick = document.getElementById('discordNick').value.trim();
             if (!nick || nick.length < 2) {
@@ -146,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Sección 2: Experiencia
         if (section === 2) {
             const hasExp = document.querySelector('input[name="hasExperience"]:checked');
             if (!hasExp) {
@@ -166,7 +160,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Sección 3: Escenarios
         if (section === 3) {
             const s1 = document.getElementById('scenario1').value.trim();
             if (!s1 || s1.length < 20) {
@@ -186,7 +179,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Sección 4: Sobre ti
         if (section === 4) {
             const motivation = document.getElementById('motivation').value.trim();
             if (!motivation || motivation.length < 20) {
@@ -213,7 +205,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // OBTENER DATOS DEL FORMULARIO
     // ============================================
     function getFormData() {
-        // Obtener herramientas seleccionadas (si existen)
         const tools = [];
         document.querySelectorAll('input[name="tools"]:checked').forEach(cb => tools.push(cb.value));
         
@@ -246,7 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🟢 Guardando en Supabase...');
         console.log('📦 Datos:', formData);
         
-        // Verificar que Supabase existe
         const client = supabase || window.supabase;
         if (!client) {
             console.error('❌ Supabase no está disponible');
@@ -279,10 +269,8 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         console.log('📤 ===== ENVIANDO POSTULACIÓN =====');
         
-        // Validar última sección
         if (!validateSection(4)) return false;
         
-        // Verificar cooldown (evitar spam)
         const now = Date.now();
         if (now - lastSubmissionTime < CONFIG.cooldownTime && lastSubmissionTime > 0) {
             const minutes = Math.ceil((CONFIG.cooldownTime - (now - lastSubmissionTime)) / 60000);
@@ -290,10 +278,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
         
-        // Evitar envíos duplicados
         if (isSubmitting) return false;
         
-        // Bloquear botón
         isSubmitting = true;
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
@@ -301,26 +287,21 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.querySelector('.btn-text').textContent = 'Enviando...';
         
         try {
-            // Obtener datos
             const formData = getFormData();
             console.log('📦 Datos del formulario:', formData);
             
-            // Guardar en Supabase
             const result = await saveToSupabase(formData);
             
             if (result.success) {
-                // Mostrar mensaje de éxito
                 const messageContainer = document.getElementById('messageContainer');
                 messageContainer.innerHTML = '✅ ¡Postulación enviada con éxito!<br>🟢 Se guardó en Supabase.';
                 messageContainer.className = 'message-container success';
                 messageContainer.classList.remove('hidden');
                 
-                // Resetear formulario
                 document.getElementById('postulacionForm').reset();
                 localStorage.removeItem(CONFIG.draftKey);
                 lastSubmissionTime = Date.now();
                 
-                // Volver a la primera sección
                 currentSection = 1;
                 showSection(1);
                 updateNavigation();
@@ -339,7 +320,6 @@ document.addEventListener('DOMContentLoaded', function() {
             messageContainer.classList.remove('hidden');
             alert('❌ Error: ' + error.message);
         } finally {
-            // Desbloquear botón después de 2 segundos
             setTimeout(() => {
                 isSubmitting = false;
                 submitBtn.disabled = false;
@@ -398,30 +378,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     console.log('🔧 Configurando eventos...');
     
-    // Botones de navegación
     prevBtn.addEventListener('click', previousSection);
     nextBtn.addEventListener('click', nextSection);
-    
-    // Envío del formulario
     form.addEventListener('submit', handleSubmit);
     
-    // Mostrar/ocultar experiencia
     document.querySelectorAll('input[name="hasExperience"]').forEach(radio => {
         radio.addEventListener('change', toggleExperienceDetails);
     });
     
-    // Botón de Staff (abre admin panel)
     document.getElementById('staffLoginBtn').addEventListener('click', function() {
         window.open('admin.html', '_blank');
     });
     
-    // Guardar borrador automáticamente (cada 2 segundos)
     form.addEventListener('input', function() {
         clearTimeout(window._draftTimeout);
         window._draftTimeout = setTimeout(saveDraft, 2000);
     });
     
-    // Atajos de teclado (Ctrl + Flechas)
     document.addEventListener('keydown', function(e) {
         if (e.ctrlKey && e.key === 'ArrowRight') {
             e.preventDefault();
