@@ -2,7 +2,7 @@
 // CONFIGURACIÓN
 // ============================================
 const CONFIG = {
-    staffIds: ['TU_ID_DE_DISCORD'],
+    staffIds: ['TU_ID_DE_DISCORD'],  // <-- PON TU ID DE DISCORD AQUÍ
     staffToken: 'LosEnmascarados2024_Secure',
     authKey: 'enmascarados_admin_auth'
 };
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================
-// AUTENTICACIÓN SIMPLIFICADA
+// AUTENTICACIÓN
 // ============================================
 function checkAuthentication() {
     const saved = localStorage.getItem(CONFIG.authKey);
@@ -114,7 +114,15 @@ function loadApplications() {
 
 async function fetchApplications() {
     try {
-        const { data, error } = await supabase
+        const client = supabase || window.supabase;
+        if (!client) {
+            console.error('❌ Supabase no disponible');
+            document.getElementById('allAppsList').innerHTML = 
+                '<p class="empty-state">❌ Error: Supabase no conectado</p>';
+            return;
+        }
+        
+        const { data, error } = await client
             .from('postulaciones')
             .select('*')
             .order('created_at', { ascending: false });
@@ -132,6 +140,8 @@ async function fetchApplications() {
         
     } catch (error) {
         console.error('❌ Error:', error);
+        document.getElementById('allAppsList').innerHTML = 
+            `<p class="empty-state">❌ Error: ${error.message}</p>`;
     }
 }
 
@@ -263,7 +273,8 @@ async function reviewApplication(status) {
     const notes = document.getElementById('reviewNotes').value;
     
     try {
-        const { error } = await supabase
+        const client = supabase || window.supabase;
+        const { error } = await client
             .from('postulaciones')
             .update({
                 status: status,
