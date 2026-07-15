@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Guardar en Firebase
     async function saveToFirebase(data) {
-        console.log('🔥 Guardando en Firebase...');
+        console.log('🔥 Guardando en Supabase...');
         try {
             const docRef = await db.collection('postulaciones').add(data);
             console.log('✅ Guardado! ID:', docRef.id);
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             const data = getData();
-            const saved = await saveToFirebase(data);
+           const saved = await saveToSupabase(data);
             
             if (saved) {
                 messageBox.textContent = '✅ ¡Postulación enviada! Se guardó en la nube.';
