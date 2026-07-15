@@ -3,278 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Staff | Los Enmascarados</title>
-    <link rel="stylesheet" href="admin-styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Panel Admin | Los Enmascarados</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #1a1a2e; color: white; padding: 20px; }
+        .card { background: #16213e; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid #6c3ce0; }
+        .card h3 { margin: 0 0 5px 0; color: #a78bfa; }
+        .card small { color: #888; }
+        .badge { background: #6c3ce0; padding: 2px 10px; border-radius: 20px; font-size: 0.8rem; }
+        .actions button { margin: 5px; padding: 5px 15px; border: none; border-radius: 5px; cursor: pointer; }
+        .accept { background: #4ade80; color: black; }
+        .reject { background: #f87171; color: black; }
+        .loading { text-align: center; padding: 50px; color: #888; }
+    </style>
 </head>
 <body>
-    <!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyCzXGRyjUGyBqWAK-Jq1UVTS-JmoSkU-SI",
-        authDomain: "los-enmascarados.firebaseapp.com",
-        projectId: "los-enmascarados",
-        storageBucket: "los-enmascarados.firebasestorage.app",
-        messagingSenderId: "285760248582",
-        appId: "1:285760248582:web:80424b96292cc336e6dc87"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    console.log('🔥 Firebase Admin listo');
-</script>
-    <!-- PANTALLA DE LOGIN -->
-    <div id="loginScreen" class="login-screen">
-        <div class="login-container">
-            <div class="login-header">
-                <div class="mask-icon">🎭</div>
-                <h1>Panel Staff</h1>
-                <p>Los Enmascarados</p>
-            </div>
-            
-            <div class="login-card">
-                <h2>🔐 Acceso Restringido</h2>
-                <p class="login-description">Solo para miembros del staff autorizados</p>
-                
-                <div class="login-methods">
-                    <div class="token-login">
-                        <label for="staffToken">Token de acceso</label>
-                        <div class="token-input-group">
-                            <input type="password" id="staffToken" placeholder="Ingresa tu token de staff">
-                            <button id="tokenLoginBtn" class="token-btn">
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="divider">
-                        <span>o</span>
-                    </div>
-                    
-                    <div class="id-login">
-                        <label for="staffId">ID de Discord</label>
-                        <div class="token-input-group">
-                            <input type="text" id="staffId" placeholder="Tu ID de Discord">
-                            <button id="idLoginBtn" class="token-btn">
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                        <span style="font-size:0.75rem;color:#a0a0b8;margin-top:0.5rem;display:block;">
-                            Activa modo desarrollador en Discord para copiar tu ID
-                        </span>
-                    </div>
-                </div>
-                
-                <div id="loginMessage" class="login-message hidden"></div>
-            </div>
-        </div>
-    </div>
+    <h1>🛡️ Panel de Moderación</h1>
+    <div id="loading" class="loading">Cargando postulaciones...</div>
+    <div id="lista"></div>
 
-    <!-- PANEL PRINCIPAL -->
-    <div id="adminPanel" class="admin-panel hidden">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo">🎭</div>
-                <h2>Los Enmascarados</h2>
-            </div>
-            
-            <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" data-view="dashboard">
-                    <i class="fas fa-th-large"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#" class="nav-item" data-view="applications">
-                    <i class="fas fa-users"></i>
-                    <span>Postulaciones</span>
-                    <span class="badge" id="newAppsBadge">0</span>
-                </a>
-                <a href="#" class="nav-item" data-view="reviewed">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Revisadas</span>
-                </a>
-                <a href="#" class="nav-item" data-view="settings">
-                    <i class="fas fa-cog"></i>
-                    <span>Configuración</span>
-                </a>
-            </nav>
-            
-            <div class="sidebar-footer">
-                <div class="user-info" id="userInfo">
-                    <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="user-avatar">
-                    <div class="user-details">
-                        <span class="user-name">Staff Member</span>
-                        <span class="user-role">Moderador</span>
-                    </div>
-                </div>
-                <button id="logoutBtn" class="logout-btn" title="Cerrar sesión">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
-        </aside>
+    <script>
+        // CONFIGURACIÓN
+        const SUPABASE_URL = 'https://tusubdominio.supabase.co';  // <-- PON TU URL
+        const SUPABASE_ANON_KEY = 'tu-clave-anon';               // <-- PON TU CLAVE
 
-        <!-- Contenido Principal -->
-        <main class="main-panel">
-            <!-- Header -->
-            <header class="panel-header">
-                <div class="header-left">
-                    <button id="mobileMenuBtn" class="mobile-menu-btn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h1 id="currentView">Dashboard</h1>
-                </div>
-                <div class="header-right">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchApps" placeholder="Buscar postulaciones...">
-                    </div>
-                    <button class="refresh-btn" id="refreshBtn" title="Actualizar">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                </div>
-            </header>
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            <!-- Dashboard View -->
-            <div class="view active" id="dashboardView">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background:rgba(108,60,224,0.2);">📥</div>
-                        <div class="stat-info">
-                            <h3 id="totalNew">0</h3>
-                            <p>Nuevas</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background:rgba(74,222,128,0.2);">✅</div>
-                        <div class="stat-info">
-                            <h3 id="totalAccepted">0</h3>
-                            <p>Aceptadas</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background:rgba(248,113,113,0.2);">❌</div>
-                        <div class="stat-info">
-                            <h3 id="totalRejected">0</h3>
-                            <p>Rechazadas</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background:rgba(251,191,36,0.2);">📊</div>
-                        <div class="stat-info">
-                            <h3 id="totalAll">0</h3>
-                            <p>Total</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="recent-applications">
-                    <h2>📋 Postulaciones Recientes</h2>
-                    <div id="recentAppsList" class="apps-list">
-                        <p class="empty-state">No hay postulaciones</p>
-                    </div>
-                </div>
-            </div>
+        async function cargarPostulaciones() {
+            const { data, error } = await supabase
+                .from('postulaciones')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-            <!-- Applications View -->
-            <div class="view" id="applicationsView">
-                <div class="view-header">
-                    <h2>📝 Todas las Postulaciones</h2>
-                    <div class="filter-options">
-                        <select id="filterStatus">
-                            <option value="all">Todas</option>
-                            <option value="new">Nuevas</option>
-                            <option value="accepted">Aceptadas</option>
-                            <option value="rejected">Rechazadas</option>
-                        </select>
-                        <select id="sortBy">
-                            <option value="date-desc">Más recientes</option>
-                            <option value="date-asc">Más antiguas</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="allAppsList" class="apps-list">
-                    <p class="empty-state">Cargando...</p>
-                </div>
-            </div>
+            if (error) {
+                document.getElementById('lista').innerHTML = '❌ Error al cargar: ' + error.message;
+                return;
+            }
 
-            <!-- Reviewed View -->
-            <div class="view" id="reviewedView">
-                <h2>✅ Postulaciones Revisadas</h2>
-                <div id="reviewedAppsList" class="apps-list">
-                    <p class="empty-state">No hay postulaciones revisadas</p>
-                </div>
-            </div>
+            document.getElementById('loading').style.display = 'none';
+            const lista = document.getElementById('lista');
+            lista.innerHTML = '';
 
-            <!-- Settings View -->
-            <div class="view" id="settingsView">
-                <h2>⚙️ Configuración</h2>
-                <div class="settings-container">
-                    <div class="setting-card">
-                        <h3>🔔 Notificaciones</h3>
-                        <label class="switch-label">
-                            Notificaciones de nuevas postulaciones
-                            <input type="checkbox" id="notificationsToggle" checked>
-                            <span class="switch"></span>
-                        </label>
-                    </div>
-                    
-                    <div class="setting-card">
-                        <h3>📁 Gestión de Datos</h3>
-                        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-                            <button id="exportDataBtn" class="action-button">
-                                <i class="fas fa-download"></i> Exportar CSV
-                            </button>
-                            <button id="clearAllBtn" class="action-button" style="background:#f87171;">
-                                <i class="fas fa-trash"></i> Limpiar Todo
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="setting-card">
-                        <h3>ℹ️ Información</h3>
-                        <div style="color:#a0a0b8;font-size:0.9rem;">
-                            <p>Total postulaciones: <strong id="infoTotal">0</strong></p>
-                            <p>Última actualización: <strong id="infoLastUpdate">Nunca</strong></p>
-                            <p>Versión: 1.0.0</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
+            if (data.length === 0) {
+                lista.innerHTML = '<p style="color:#888;">No hay postulaciones aún.</p>';
+                return;
+            }
 
-    <!-- MODAL DE DETALLE -->
-    <div id="applicationModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Detalle de Postulación</h2>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div id="modalBody" class="modal-body">
-                <!-- Contenido dinámico -->
-            </div>
-            <div class="modal-footer">
-                <div class="modal-actions">
-                    <button class="action-btn reject-btn" id="rejectAppBtn">
-                        <i class="fas fa-times"></i> Rechazar
-                    </button>
-                    <button class="action-btn accept-btn" id="acceptAppBtn">
-                        <i class="fas fa-check"></i> Aceptar
-                    </button>
-                </div>
-                <textarea id="reviewNotes" placeholder="Notas de revisión (opcional)..."></textarea>
-                <button class="save-review-btn" id="saveReviewBtn">
-                    <i class="fas fa-save"></i> Guardar Revisión
-                </button>
-            </div>
-        </div>
-    </div>
+            data.forEach((p) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3>${p.discord_nick} <span class="badge">${p.status}</span></h3>
+                    <p><strong>Edad:</strong> ${p.age} | <strong>Zona:</strong> ${p.timezone}</p>
+                    <p><strong>Disponibilidad:</strong> ${p.availability}</p>
+                    <p><strong>Motivación:</strong> ${p.motivation}</p>
+                    <p><small>ID: ${p.discord_id} | ${new Date(p.created_at).toLocaleString()}</small></p>
+                    <div class="actions">
+                        <button class="accept" onclick="cambiarEstado(${p.id}, 'aceptado')">✅ Aceptar</button>
+                        <button class="reject" onclick="cambiarEstado(${p.id}, 'rechazado')">❌ Rechazar</button>
+                        <button onclick="verDetalle(${p.id})">📄 Ver más</button>
+                    </div>
+                `;
+                lista.appendChild(card);
+            });
+        }
 
-    <script src="admin-script.js"></script>
+        async function cambiarEstado(id, nuevoEstado) {
+            const { error } = await supabase
+                .from('postulaciones')
+                .update({ status: nuevoEstado })
+                .eq('id', id);
+
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                alert('✅ Estado actualizado a ' + nuevoEstado);
+                cargarPostulaciones(); // Recargar lista
+            }
+        }
+
+        function verDetalle(id) {
+            alert('Función para mostrar detalles completos (puedes expandirla)');
+        }
+
+        // Cargar al abrir
+        cargarPostulaciones();
+
+        // Actualizar cada 10 segundos (tiempo real)
+        setInterval(cargarPostulaciones, 10000);
+    </script>
 </body>
 </html>
