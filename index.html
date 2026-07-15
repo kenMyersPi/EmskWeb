@@ -8,10 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- FIREBASE -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
 </head>
 <body>
     <div class="staff-corner">
@@ -195,20 +192,17 @@
         </footer>
     </div>
 
-    <!-- INICIALIZAR FIREBASE -->
+<!-- SUPABASE -->
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCzXGRyjUGyBqWAK-Jq1UVTS-JmoSkU-SI",
-            authDomain: "los-enmascarados.firebaseapp.com",
-            projectId: "los-enmascarados",
-            storageBucket: "los-enmascarados.firebasestorage.app",
-            messagingSenderId: "285760248582",
-            appId: "1:285760248582:web:80424b96292cc336e6dc87"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        console.log('🔥 Firebase listo');
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    // Configuración de Supabase
+    const SUPABASE_URL = 'https://nvuhvqvrxwhpbcuydhtn.supabase.co/rest/v1/';  // <-- PON TU URL
+    const SUPABASE_ANON_KEY = 'sb_publishable__7UUW0nCs5OWsFGlLdn7Wg_4y3qUlmC';               // <-- PON TU CLAVE
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('🟢 Supabase listo');
+</script>
     </script>
 
     <script src="script.js"></script>
