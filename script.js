@@ -1,25 +1,43 @@
-// Variables
+// ============================================
+// CONFIGURACIÓN
+// ============================================
+const CONFIG = {
+    draftKey: 'enmascarados_draft',
+    cooldownTime: 300000
+};
+
+// ============================================
+// ESTADO GLOBAL
+// ============================================
 let currentSection = 1;
 const totalSections = 4;
 let isSubmitting = false;
 let lastSubmissionTime = 0;
 
-// Esperar a que la página cargue
+// ============================================
+// CUANDO EL DOM ESTÉ LISTO
+// ============================================
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ DOM cargado');
+    console.log('🟢 Supabase:', typeof supabase !== 'undefined' ? 'Conectado ✅' : 'Error ❌');
     
-    // Elementos
+    // Referencias
     const form = document.getElementById('postulacionForm');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const submitBtn = document.getElementById('submitBtn');
     const progressBar = document.getElementById('progressBar');
-    const messageBox = document.getElementById('messageContainer');
+    const messageContainer = document.getElementById('messageContainer');
+    const sections = document.querySelectorAll('.form-section');
+    const steps = document.querySelectorAll('.step');
     
-    // Actualizar navegación
-    function updateNav() {
+    // ============================================
+    // NAVEGACIÓN
+    // ============================================
+    function updateNavigation() {
         prevBtn.style.display = currentSection === 1 ? 'none' : 'inline-flex';
         
-        if (currentSection === 4) {
+        if (currentSection === totalSections) {
             nextBtn.style.display = 'none';
             submitBtn.style.display = 'flex';
         } else {
@@ -27,228 +45,347 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.style.display = 'none';
         }
         
-        let progress = ((currentSection - 1) / 3) * 100;
+        const progress = ((currentSection - 1) / (totalSections - 1)) * 100;
         progressBar.style.width = progress + '%';
         
-        document.querySelectorAll('.step').forEach((step, i) => {
+        steps.forEach((step, index) => {
             step.classList.remove('active', 'completed');
-            if (i + 1 === currentSection) step.classList.add('active');
-            if (i + 1 < currentSection) step.classList.add('completed');
+            if (index + 1 === currentSection) step.classList.add('active');
+            else if (index + 1 < currentSection) step.classList.add('completed');
         });
     }
     
-    // Mostrar sección
-    function showSection(num) {
-        document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
-        document.querySelector(`[data-section="${num}"]`).classList.add('active');
-    }
-    
-    // Siguiente
-    function nextSection() {
-        if (validateSection(currentSection)) {
-            currentSection++;
-            showSection(currentSection);
-            updateNav();
+    function showSection(sectionNumber) {
+        sections.forEach(s => s.classList.remove('active'));
+        const target = document.querySelector(`[data-section="${sectionNumber}"]`);
+        if (target) {
+            target.classList.add('active');
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
     
-    // Anterior
-    function prevSection() {
+    function nextSection() {
+        if (validateSection(currentSection) && currentSection < totalSections) {
+            currentSection++;
+            showSection(currentSection);
+            updateNavigation();
+        }
+    }
+    
+    function previousSection() {
         if (currentSection > 1) {
             currentSection--;
             showSection(currentSection);
-            updateNav();
+            updateNavigation();
         }
     }
     
-    // Validar
-    function validateSection(num) {
-        // Limpiar errores
-        document.querySelectorAll('.field-error-msg').forEach(e => e.remove());
-        document.querySelectorAll('input, select, textarea').forEach(e => e.style.borderColor = '');
+    // ============================================
+    // VALIDACIONES
+    // ============================================
+    function showError(elementId, message) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
         
-        let ok = true;
+        element.style.borderColor = '#f87171';
+        const oldError = element.parentElement.querySelector('.field-error-msg');
+        if (oldError) oldError.remove();
         
-        if (num === 1) {
-            if (!document.getElementById('discordNick').value.trim()) {
-                error('discordNick', 'Ingresa tu nick');
-                ok = false;
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'field-error-msg';
+        errorDiv.style.cssText = 'color:#f87171;font-size:0.8rem;margin-top:5px;';
+        errorDiv.textContent = '⚠️ ' + message;
+        element.parentElement.appendChild(errorDiv);
+        element.focus();
+    }
+    
+    function clearErrors() {
+        document.querySelectorAll('.field-error-msg').forEach(el => el.remove());
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.style.borderColor = '';
+        });
+        messageContainer.classList.add('hidden');
+    }
+    
+    function validateSection(section) {
+        clearErrors();
+        let valid = true;
+        
+        if (section === 1) {
+            const nick = document.getElementById('discordNick').value.trim();
+            if (!nick || nick.length < 2) {
+                showError('discordNick', 'Ingresa tu nick (mín. 2 caracteres)');
+                valid = false;
             }
-            if (!document.getElementById('discordId').value.trim()) {
-                error('discordId', 'Ingresa tu ID');
-                ok = false;
+            
+            const id = document.getElementById('discordId').value.trim();
+            if (!id || !/^\d{17,19}$/.test(id)) {
+                showError('discordId', 'ID inválido (17-19 dígitos)');
+                valid = false;
             }
-            if (!document.getElementById('age').value) {
-                error('age', 'Ingresa tu edad');
-                ok = false;
+            
+            const age = document.getElementById('age').value;
+            if (!age || age < 13 || age > 99) {
+                showError('age', 'Edad entre 13 y 99 años');
+                valid = false;
             }
+            
             if (!document.getElementById('timezone').value) {
-                error('timezone', 'Selecciona zona horaria');
-                ok = false;
+                showError('timezone', 'Selecciona tu zona horaria');
+                valid = false;
             }
+            
             if (!document.getElementById('languages').value.trim()) {
-                error('languages', 'Ingresa idiomas');
-                ok = false;
+                showError('languages', 'Indica los idiomas que hablas');
+                valid = false;
             }
         }
         
-        if (num === 2) {
-            if (!document.querySelector('input[name="hasExperience"]:checked')) {
-                alert('Indica si tienes experiencia');
-                ok = false;
+        if (section === 2) {
+            const hasExp = document.querySelector('input[name="hasExperience"]:checked');
+            if (!hasExp) {
+                alert('⚠️ Indica si tienes experiencia');
+                valid = false;
+            } else if (hasExp.value === 'si') {
+                const desc = document.getElementById('experienceDescription').value.trim();
+                if (!desc || desc.length < 10) {
+                    showError('experienceDescription', 'Describe tu experiencia (mín. 10 caracteres)');
+                    valid = false;
+                }
             }
+            
             if (!document.getElementById('availability').value) {
-                error('availability', 'Selecciona disponibilidad');
-                ok = false;
+                showError('availability', 'Selecciona tu disponibilidad');
+                valid = false;
             }
         }
         
-        if (num === 3) {
-            if (!document.getElementById('scenario1').value.trim()) {
-                error('scenario1', 'Responde el escenario 1');
-                ok = false;
+        if (section === 3) {
+            const s1 = document.getElementById('scenario1').value.trim();
+            if (!s1 || s1.length < 20) {
+                showError('scenario1', 'Desarrolla tu respuesta (mín. 20 caracteres)');
+                valid = false;
             }
-            if (!document.getElementById('scenario2').value.trim()) {
-                error('scenario2', 'Responde el escenario 2');
-                ok = false;
+            
+            const s2 = document.getElementById('scenario2').value.trim();
+            if (!s2 || s2.length < 20) {
+                showError('scenario2', 'Desarrolla tu respuesta (mín. 20 caracteres)');
+                valid = false;
             }
+            
             if (!document.querySelector('input[name="discordRules"]:checked')) {
-                alert('Indica si conoces las reglas');
-                ok = false;
+                alert('⚠️ Indica tu conocimiento de las reglas');
+                valid = false;
             }
         }
         
-        if (num === 4) {
-            if (!document.getElementById('motivation').value.trim()) {
-                error('motivation', 'Escribe tu motivación');
-                ok = false;
+        if (section === 4) {
+            const motivation = document.getElementById('motivation').value.trim();
+            if (!motivation || motivation.length < 20) {
+                showError('motivation', 'Cuéntanos tu motivación (mín. 20 caracteres)');
+                valid = false;
             }
-            if (!document.getElementById('strengths').value.trim()) {
-                error('strengths', 'Escribe tus fortalezas');
-                ok = false;
+            
+            const strengths = document.getElementById('strengths').value.trim();
+            if (!strengths || strengths.length < 10) {
+                showError('strengths', 'Indica tus fortalezas (mín. 10 caracteres)');
+                valid = false;
             }
+            
             if (!document.getElementById('termsAccepted').checked) {
-                alert('Acepta los términos');
-                ok = false;
+                alert('⚠️ Debes aceptar los términos');
+                valid = false;
             }
         }
         
-        return ok;
+        return valid;
     }
     
-    function error(id, msg) {
-        const el = document.getElementById(id);
-        el.style.borderColor = '#f87171';
-        const div = document.createElement('div');
-        div.className = 'field-error-msg';
-        div.style.cssText = 'color:#f87171;font-size:0.8rem;margin-top:5px;';
-        div.textContent = '⚠️ ' + msg;
-        el.parentElement.appendChild(div);
-        el.focus();
-    }
-    
-    // Obtener datos del formulario
-    function getData() {
+    // ============================================
+    // OBTENER DATOS (formato para Supabase)
+    // ============================================
+    function getFormData() {
         return {
-            discordNick: document.getElementById('discordNick').value.trim(),
-            discordId: document.getElementById('discordId').value.trim(),
-            age: document.getElementById('age').value,
+            discord_nick: document.getElementById('discordNick').value.trim(),
+            discord_id: document.getElementById('discordId').value.trim(),
+            age: parseInt(document.getElementById('age').value),
             timezone: document.getElementById('timezone').value,
             languages: document.getElementById('languages').value.trim(),
-            hasExperience: document.querySelector('input[name="hasExperience"]:checked')?.value || 'no',
-            experienceDescription: document.getElementById('experienceDescription').value.trim(),
+            has_experience: document.querySelector('input[name="hasExperience"]:checked')?.value || 'no',
+            experience_description: document.getElementById('experienceDescription').value.trim(),
             availability: document.getElementById('availability').value,
             scenario1: document.getElementById('scenario1').value.trim(),
             scenario2: document.getElementById('scenario2').value.trim(),
-            discordRules: document.querySelector('input[name="discordRules"]:checked')?.value || '',
+            discord_rules: document.querySelector('input[name="discordRules"]:checked')?.value || '',
             motivation: document.getElementById('motivation').value.trim(),
             strengths: document.getElementById('strengths').value.trim(),
             weaknesses: document.getElementById('weaknesses').value.trim(),
-            additionalInfo: document.getElementById('additionalInfo')?.value.trim() || '',
+            additional_info: document.getElementById('additionalInfo').value.trim(),
             status: 'new',
-            createdAt: new Date().toISOString()
+            created_at: new Date().toISOString()
         };
     }
     
-    // Guardar en Firebase
-    async function saveToFirebase(data) {
-        console.log('🔥 Guardando en Supabase...');
+    // ============================================
+    // GUARDAR EN SUPABASE
+    // ============================================
+    async function saveToSupabase(formData) {
+        console.log('🟢 Guardando en Supabase...');
+        
         try {
-            const docRef = await db.collection('postulaciones').add(data);
-            console.log('✅ Guardado! ID:', docRef.id);
-            return true;
+            const { data, error } = await supabase
+                .from('postulaciones')
+                .insert([formData])
+                .select();
+            
+            if (error) {
+                console.error('❌ Error Supabase:', error);
+                return { success: false, error: error.message };
+            }
+            
+            console.log('✅ Guardado! ID:', data[0].id);
+            return { success: true, id: data[0].id };
         } catch (error) {
             console.error('❌ Error:', error);
-            return false;
+            return { success: false, error: error.message };
         }
     }
     
-    // Enviar formulario
-    async function enviar(event) {
+    // ============================================
+    // ENVIAR FORMULARIO
+    // ============================================
+    async function handleSubmit(event) {
         event.preventDefault();
-        console.log('📤 Enviando...');
+        console.log('📤 ===== ENVIANDO =====');
         
-        if (!validateSection(4)) return;
-        if (isSubmitting) return;
+        if (!validateSection(4)) return false;
+        
+        const now = Date.now();
+        if (now - lastSubmissionTime < CONFIG.cooldownTime && lastSubmissionTime > 0) {
+            const minutes = Math.ceil((CONFIG.cooldownTime - (now - lastSubmissionTime)) / 60000);
+            alert(`⏰ Espera ${minutes} minutos para enviar otra vez.`);
+            return false;
+        }
+        
+        if (isSubmitting) return false;
         
         isSubmitting = true;
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Enviando...';
+        submitBtn.style.opacity = '0.6';
+        submitBtn.querySelector('.btn-text').textContent = 'Enviando...';
         
         try {
-            const data = getData();
-           const saved = await saveToSupabase(data);
+            const formData = getFormData();
+            console.log('📦 Datos:', formData.discord_nick);
             
-            if (saved) {
-                messageBox.textContent = '✅ ¡Postulación enviada! Se guardó en la nube.';
-                messageBox.className = 'message-container success';
-                messageBox.classList.remove('hidden');
+            const result = await saveToSupabase(formData);
+            
+            if (result.success) {
+                messageContainer.innerHTML = '✅ ¡Postulación enviada con éxito!<br>🟢 Se guardó en Supabase.';
+                messageContainer.className = 'message-container success';
+                messageContainer.classList.remove('hidden');
                 
                 form.reset();
+                localStorage.removeItem(CONFIG.draftKey);
+                lastSubmissionTime = Date.now();
+                
                 currentSection = 1;
                 showSection(1);
-                updateNav();
-                window.scrollTo(0, 0);
+                updateNavigation();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
                 
-                alert('🎉 ¡Postulación enviada con éxito!');
+                alert('🎉 ¡Postulación enviada!\n\nLos administradores la revisarán pronto.');
             } else {
-                alert('❌ Error al guardar. Revisa la consola (F12).');
+                throw new Error(result.error || 'Error al guardar');
             }
-        } catch (e) {
-            console.error(e);
-            alert('Error: ' + e.message);
+            
+        } catch (error) {
+            console.error('❌ Error:', error);
+            messageContainer.textContent = '❌ Error al enviar: ' + error.message;
+            messageContainer.className = 'message-container error';
+            messageContainer.classList.remove('hidden');
+        } finally {
+            setTimeout(() => {
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.querySelector('.btn-text').textContent = 'Enviar Postulación';
+            }, 2000);
         }
         
-        isSubmitting = false;
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Enviar Postulación 📤';
+        return false;
     }
     
-    // Eventos
-    prevBtn.addEventListener('click', prevSection);
-    nextBtn.addEventListener('click', nextSection);
-    form.addEventListener('submit', enviar);
+    // ============================================
+    // UTILIDADES
+    // ============================================
+    function toggleExperienceDetails() {
+        const hasExp = document.querySelector('input[name="hasExperience"]:checked');
+        const details = document.getElementById('experienceDetails');
+        details.style.display = (hasExp && hasExp.value === 'si') ? 'block' : 'none';
+    }
     
-    // Experiencia
+    function saveDraft() {
+        // Guardar borrador (simplificado)
+        const data = {
+            discordNick: document.getElementById('discordNick').value,
+            discordId: document.getElementById('discordId').value,
+            age: document.getElementById('age').value,
+            timezone: document.getElementById('timezone').value,
+            languages: document.getElementById('languages').value
+        };
+        localStorage.setItem(CONFIG.draftKey, JSON.stringify(data));
+    }
+    
+    function loadDraft() {
+        const draft = localStorage.getItem(CONFIG.draftKey);
+        if (!draft) return;
+        try {
+            const data = JSON.parse(draft);
+            if (data.discordNick) document.getElementById('discordNick').value = data.discordNick;
+            if (data.discordId) document.getElementById('discordId').value = data.discordId;
+            if (data.age) document.getElementById('age').value = data.age;
+            if (data.timezone) document.getElementById('timezone').value = data.timezone;
+            if (data.languages) document.getElementById('languages').value = data.languages;
+            console.log('📂 Borrador cargado');
+        } catch (e) {
+            console.error('Error al cargar borrador:', e);
+        }
+    }
+    
+    // ============================================
+    // EVENTOS
+    // ============================================
+    console.log('🔧 Configurando eventos...');
+    
+    prevBtn.addEventListener('click', previousSection);
+    nextBtn.addEventListener('click', nextSection);
+    form.addEventListener('submit', handleSubmit);
+    
     document.querySelectorAll('input[name="hasExperience"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            document.getElementById('experienceDetails').style.display = 
-                this.value === 'si' ? 'block' : 'none';
-        });
+        radio.addEventListener('change', toggleExperienceDetails);
     });
     
-    // Staff
     document.getElementById('staffLoginBtn').addEventListener('click', function() {
         window.open('admin.html', '_blank');
     });
     
-    // Teclas
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'ArrowRight') { e.preventDefault(); nextSection(); }
-        if (e.ctrlKey && e.key === 'ArrowLeft') { e.preventDefault(); prevSection(); }
+    form.addEventListener('input', function() {
+        clearTimeout(window._draftTimeout);
+        window._draftTimeout = setTimeout(saveDraft, 2000);
     });
     
-    // Iniciar
-    updateNav();
-    console.log('✅ Formulario listo');
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'ArrowRight') { e.preventDefault(); nextSection(); }
+        if (e.ctrlKey && e.key === 'ArrowLeft') { e.preventDefault(); previousSection(); }
+    });
+    
+    // ============================================
+    // INICIAR
+    // ============================================
+    updateNavigation();
+    loadDraft();
+    console.log('✅ Formulario listo con Supabase');
 });
+
+console.log('📄 script.js cargado');
