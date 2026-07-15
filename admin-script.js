@@ -55,20 +55,34 @@ function showLoginScreen() {
 }
 
 function showAdminPanel() {
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('adminPanel').classList.remove('hidden');
+    console.log('🔄 Mostrando panel admin...');
+    const loginScreen = document.getElementById('loginScreen');
+    const adminPanel = document.getElementById('adminPanel');
+    
+    console.log('loginScreen existe?', !!loginScreen);
+    console.log('adminPanel existe?', !!adminPanel);
+    
+    if (loginScreen) loginScreen.classList.add('hidden');
+    if (adminPanel) adminPanel.classList.remove('hidden');
+    
+    console.log('✅ Panel mostrado');
     updateUserInfo();
 }
 
 function loginWithToken() {
+    console.log('🔑 Intentando login con token...');
     const token = document.getElementById('staffToken').value;
+    console.log('Token ingresado:', token);
+    console.log('Token esperado:', CONFIG.staffToken);
+    
     if (token === CONFIG.staffToken) {
+        console.log('✅ Token correcto, autenticando...');
         authenticateUser({ username: 'Admin', role: 'Administrador' });
     } else {
+        console.log('❌ Token incorrecto');
         showLoginMessage('Token inválido', 'error');
     }
 }
-
 function loginWithId() {
     const id = document.getElementById('staffId').value.trim();
     if (CONFIG.staffIds.includes(id)) {
@@ -79,6 +93,7 @@ function loginWithId() {
 }
 
 function authenticateUser(user) {
+    console.log('🔐 Autenticando usuario:', user);
     state.isAuthenticated = true;
     state.currentUser = user;
     localStorage.setItem(CONFIG.authKey, JSON.stringify({
@@ -86,7 +101,9 @@ function authenticateUser(user) {
         user: user,
         timestamp: Date.now()
     }));
+    console.log('✅ Estado guardado en localStorage');
     showAdminPanel();
+    console.log('📌 showAdminPanel() ejecutado');
 }
 
 function logout() {
