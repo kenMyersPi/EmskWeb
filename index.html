@@ -200,7 +200,7 @@
         const SUPABASE_URL = 'https://nvuhvqvrxwhpbcuydhtn.supabase.co/rest/v1/';  // <-- PON TU URL
         const SUPABASE_ANON_KEY = 'sb_publishable__7UUW0nCs5OWsFGlLdn7Wg_4y3qUlmC';               // <-- PON TU CLAVE
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('🟢 Supabase conectado');
 
         // Verificar conexión
