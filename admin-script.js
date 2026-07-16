@@ -2,7 +2,7 @@
 // CONFIGURACIÓN
 // ============================================
 const CONFIG = {
-    staffIds: ['TU_ID_DE_DISCORD'],  // <-- PON TU ID AQUÍ
+    staffIds: ['TU_ID_DE_DISCORD'],  // <-- CAMBIA ESTO POR TU ID DE DISCORD
     staffToken: 'LosEnmascarados2024_Secure',
     authKey: 'enmascarados_admin_auth'
 };
@@ -120,15 +120,20 @@ async function fetchApplications() {
             .order('created_at', { ascending: false });
         
         if (error) {
-            console.error('❌ Error:', error);
+            console.error('❌ Error al cargar:', error);
+            document.getElementById('allAppsList').innerHTML = 
+                `<p class="empty-state">❌ Error: ${error.message}</p>`;
             return;
         }
         
         state.applications = data || [];
-        console.log('✅ Cargadas:', state.applications.length);
+        console.log('✅ Cargadas:', state.applications.length, 'postulaciones');
         refreshDashboard();
+        
     } catch (error) {
         console.error('❌ Error:', error);
+        document.getElementById('allAppsList').innerHTML = 
+            `<p class="empty-state">❌ Error: ${error.message}</p>`;
     }
 }
 
@@ -207,8 +212,12 @@ function formatDate(date) {
 // DETALLE Y REVISIÓN
 // ============================================
 function openApplicationDetail(appId) {
+    console.log('📂 Abriendo detalle de:', appId);
     const app = state.applications.find(a => a.id === appId);
-    if (!app) return;
+    if (!app) {
+        console.error('❌ Postulación no encontrada');
+        return;
+    }
     
     state.currentApplicationId = appId;
     document.getElementById('modalTitle').textContent = `Postulación de ${app.discord_nick}`;
@@ -219,7 +228,7 @@ function openApplicationDetail(appId) {
             <p><strong>Nick:</strong> ${app.discord_nick}</p>
             <p><strong>ID:</strong> ${app.discord_id}</p>
             <p><strong>Edad:</strong> ${app.age} años</p>
-            <p><strong>Zona:</strong> ${app.timezone}</p>
+            <p><strong>Zona Horaria:</strong> ${app.timezone}</p>
             <p><strong>Idiomas:</strong> ${app.languages}</p>
             <p><strong>Disponibilidad:</strong> ${app.availability}</p>
         </div>
@@ -239,7 +248,13 @@ function openApplicationDetail(appId) {
             <p><strong>Fortalezas:</strong> ${app.strengths || 'No especificadas'}</p>
             ${app.weaknesses ? `<p><strong>Áreas de mejora:</strong> ${app.weaknesses}</p>` : ''}
         </div>
-        ${app.review_notes ? `<div class="detail-section"><div class="detail-label">📝 Notas</div><p>${app.review_notes}</p></div>` : ''}
+        ${app.review_notes ? `
+        <div class="detail-section">
+            <div class="detail-label">📝 Notas de Revisión</div>
+            <p>${app.review_notes}</p>
+            ${app.reviewed_by ? `<p><strong>Revisado por:</strong> ${app.reviewed_by}</p>` : ''}
+            ${app.reviewed_at ? `<p><strong>Fecha revisión:</strong> ${formatDate(app.reviewed_at)}</p>` : ''}
+        </div>` : ''}
     `;
     
     document.getElementById('reviewNotes').value = app.review_notes || '';
@@ -275,6 +290,7 @@ async function reviewApplication(status) {
         closeModal();
         alert(`Postulación ${status === 'accepted' ? 'aceptada ✅' : 'rechazada ❌'}`);
         fetchApplications();
+        
     } catch (error) {
         alert('Error al guardar la revisión');
     }
@@ -288,14 +304,20 @@ function switchView(viewName) {
         item.classList.remove('active');
         if (item.dataset.view === viewName) item.classList.add('active');
     });
+    
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    
     const views = {
         'dashboard': 'dashboardView',
         'applications': 'applicationsView',
         'reviewed': 'reviewedView',
         'settings': 'settingsView'
     };
-    if (views[viewName]) document.getElementById(views[viewName]).classList.add('active');
+    
+    if (views[viewName]) {
+        document.getElementById(views[viewName]).classList.add('active');
+    }
+    
     document.getElementById('currentView').textContent = viewName.charAt(0).toUpperCase() + viewName.slice(1);
 }
 
@@ -308,11 +330,17 @@ function exportToCSV() {
         return;
     }
     
-    const headers = ['Nick', 'ID Discord', 'Edad', 'Zona', 'Idiomas', 'Exp', 'Motivación', 'Estado', 'Fecha'];
+    const headers = ['Nick', 'ID Discord', 'Edad', 'Zona', 'Idiomas', 'Experiencia', 'Motivación', 'Estado', 'Fecha'];
     const rows = state.applications.map(app => [
-        app.discord_nick, app.discord_id, app.age, app.timezone,
-        app.languages, app.has_experience, app.motivation?.substring(0, 100),
-        getStatusText(app.status), formatDate(app.created_at)
+        app.discord_nick || '', 
+        app.discord_id || '', 
+        app.age || '', 
+        app.timezone || '',
+        app.languages || '', 
+        app.has_experience === 'si' ? 'Sí' : 'No', 
+        app.motivation?.substring(0, 100) || '',
+        getStatusText(app.status), 
+        formatDate(app.created_at)
     ]);
     
     const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c || ''}"`).join(','))].join('\n');
@@ -327,12 +355,16 @@ function exportToCSV() {
 // EVENTOS
 // ============================================
 function setupEventListeners() {
+    // Login
     document.getElementById('tokenLoginBtn').addEventListener('click', loginWithToken);
     document.getElementById('idLoginBtn').addEventListener('click', loginWithId);
     document.getElementById('staffToken').addEventListener('keypress', e => { if (e.key === 'Enter') loginWithToken(); });
     document.getElementById('staffId').addEventListener('keypress', e => { if (e.key === 'Enter') loginWithId(); });
+    
+    // Logout
     document.getElementById('logoutBtn').addEventListener('click', logout);
     
+    // Navegación
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', e => {
             e.preventDefault();
@@ -340,6 +372,7 @@ function setupEventListeners() {
         });
     });
     
+    // Modal
     document.querySelector('.close-modal').addEventListener('click', closeModal);
     document.getElementById('applicationModal').addEventListener('click', e => {
         if (e.target === e.currentTarget) closeModal();
@@ -347,15 +380,18 @@ function setupEventListeners() {
     document.getElementById('acceptAppBtn').addEventListener('click', () => reviewApplication('accepted'));
     document.getElementById('rejectAppBtn').addEventListener('click', () => reviewApplication('rejected'));
     
+    // Búsqueda
     document.getElementById('searchApps').addEventListener('input', e => {
         const term = e.target.value.toLowerCase();
         const filtered = state.applications.filter(app => 
             app.discord_nick?.toLowerCase().includes(term) ||
-            app.discord_id?.includes(term)
+            app.discord_id?.includes(term) ||
+            app.motivation?.toLowerCase().includes(term)
         );
         displayApplications('allAppsList', filtered);
     });
     
+    // Filtros
     document.getElementById('filterStatus').addEventListener('change', e => {
         const status = e.target.value;
         const filtered = status === 'all' 
@@ -364,13 +400,16 @@ function setupEventListeners() {
         displayApplications('allAppsList', filtered);
     });
     
+    // Botones
     document.getElementById('refreshBtn').addEventListener('click', fetchApplications);
     document.getElementById('exportDataBtn').addEventListener('click', exportToCSV);
     
+    // Móvil
     document.getElementById('mobileMenuBtn').addEventListener('click', () => {
         document.getElementById('sidebar').classList.toggle('open');
     });
     
+    // ESC
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') closeModal();
     });
