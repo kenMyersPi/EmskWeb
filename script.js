@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM cargado');
     console.log('🟢 Supabase:', typeof supabase !== 'undefined' ? 'Conectado ✅' : 'Error ❌');
     
+    // 🔥 OBTENER TODOS LOS ELEMENTOS CON VERIFICACIÓN
     const form = document.getElementById('postulacionForm');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -30,8 +31,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = document.querySelectorAll('.form-section');
     const steps = document.querySelectorAll('.step');
     
+    // 🔥 VERIFICAR QUE TODOS LOS ELEMENTOS EXISTAN
+    if (!form) console.error('❌ form no encontrado');
+    if (!prevBtn) console.error('❌ prevBtn no encontrado');
+    if (!nextBtn) console.error('❌ nextBtn no encontrado');
+    if (!submitBtn) console.error('❌ submitBtn no encontrado');
+    
     // ============================================
-    // NAVEGACIÓN (CORREGIDA)
+    // NAVEGACIÓN
     // ============================================
     function updateNavigation() {
         // Botón "Anterior": solo visible desde la sección 2 en adelante
@@ -384,27 +391,52 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // ============================================
-    // EVENTOS
+    // EVENTOS (CON VERIFICACIÓN)
     // ============================================
     console.log('🔧 Configurando eventos...');
     
-    prevBtn.addEventListener('click', previousSection);
-    nextBtn.addEventListener('click', nextSection);
-    form.addEventListener('submit', handleSubmit);
+    // 🔥 VERIFICAR QUE LOS BOTONES EXISTAN ANTES DE AGREGAR EVENTOS
+    if (prevBtn) {
+        prevBtn.addEventListener('click', previousSection);
+        console.log('✅ prevBtn configurado');
+    } else {
+        console.error('❌ prevBtn no encontrado');
+    }
     
+    if (nextBtn) {
+        nextBtn.addEventListener('click', nextSection);
+        console.log('✅ nextBtn configurado');
+    } else {
+        console.error('❌ nextBtn no encontrado');
+    }
+    
+    if (form) {
+        form.addEventListener('submit', handleSubmit);
+        console.log('✅ form configurado');
+    }
+    
+    // Mostrar/ocultar experiencia
     document.querySelectorAll('input[name="hasExperience"]').forEach(radio => {
         radio.addEventListener('change', toggleExperienceDetails);
     });
     
-    document.getElementById('staffLoginBtn').addEventListener('click', function() {
-        window.open('admin.html', '_blank');
-    });
+    // Botón de Staff (abre admin panel)
+    const staffBtn = document.getElementById('staffLoginBtn');
+    if (staffBtn) {
+        staffBtn.addEventListener('click', function() {
+            window.open('admin.html', '_blank');
+        });
+    }
     
-    form.addEventListener('input', function() {
-        clearTimeout(window._draftTimeout);
-        window._draftTimeout = setTimeout(saveDraft, 2000);
-    });
+    // Guardar borrador automáticamente
+    if (form) {
+        form.addEventListener('input', function() {
+            clearTimeout(window._draftTimeout);
+            window._draftTimeout = setTimeout(saveDraft, 2000);
+        });
+    }
     
+    // Atajos de teclado
     document.addEventListener('keydown', function(e) {
         if (e.ctrlKey && e.key === 'ArrowRight') {
             e.preventDefault();
