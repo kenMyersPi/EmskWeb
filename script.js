@@ -31,22 +31,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const steps = document.querySelectorAll('.step');
     
     // ============================================
-    // NAVEGACIÓN
+    // NAVEGACIÓN (CORREGIDA)
     // ============================================
     function updateNavigation() {
-        prevBtn.style.display = currentSection === 1 ? 'none' : 'inline-flex';
+        // Botón "Anterior": solo visible desde la sección 2 en adelante
+        if (currentSection === 1) {
+            prevBtn.style.display = 'none';
+        } else {
+            prevBtn.style.display = 'inline-flex';
+        }
         
+        // Botón "Siguiente" y "Enviar"
         if (currentSection === totalSections) {
+            // Última sección: ocultar "Siguiente", mostrar "Enviar"
             nextBtn.style.display = 'none';
             submitBtn.style.display = 'flex';
         } else {
+            // Resto de secciones: mostrar "Siguiente", ocultar "Enviar"
             nextBtn.style.display = 'inline-flex';
             submitBtn.style.display = 'none';
         }
         
+        // Actualizar barra de progreso
         const progress = ((currentSection - 1) / (totalSections - 1)) * 100;
         progressBar.style.width = progress + '%';
         
+        // Actualizar círculos de pasos
         steps.forEach((step, index) => {
             step.classList.remove('active', 'completed');
             if (index + 1 === currentSection) step.classList.add('active');
@@ -262,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // ============================================
-    // ENVIAR FORMULARIO (CORREGIDO)
+    // ENVIAR FORMULARIO
     // ============================================
     async function handleSubmit(event) {
         event.preventDefault();
