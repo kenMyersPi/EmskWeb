@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Panel Admin iniciado');
     checkAuthentication();
     setupEventListeners();
+    setupStyleToggle();
+    setupSidebarClose();
 });
 
 // ============================================
@@ -214,11 +216,9 @@ function formatDate(date) {
 function openApplicationDetail(appId) {
     console.log('📂 Abriendo detalle de ID:', appId);
     
-    // 🔥 CONVERTIR A NÚMERO
     const id = Number(appId);
     console.log('🔍 Buscando ID (número):', id);
     
-    // Buscar por ID (comparación estricta)
     const app = state.applications.find(a => a.id === id);
     
     if (!app) {
@@ -366,7 +366,7 @@ function exportToCSV() {
 }
 
 // ============================================
-// EVENTOS (SIN DUPLICACIÓN)
+// EVENTOS
 // ============================================
 function setupEventListeners() {
     console.log('🔧 Configurando eventos...');
@@ -396,7 +396,7 @@ function setupEventListeners() {
     document.getElementById('acceptAppBtn').addEventListener('click', () => reviewApplication('accepted'));
     document.getElementById('rejectAppBtn').addEventListener('click', () => reviewApplication('rejected'));
     
-    // 🔥 EVENTOS DE CLICK EN TARJETAS (UN SOLO LUGAR)
+    // Click en tarjetas
     document.addEventListener('click', function(e) {
         const card = e.target.closest('.application-card');
         if (card) {
@@ -438,5 +438,54 @@ function setupEventListeners() {
     // ESC
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') closeModal();
+    });
+}
+
+// ============================================
+// TOGGLE DE ESTILO (NEÓN / CLÁSICO)
+// ============================================
+function setupStyleToggle() {
+    const toggle = document.getElementById('styleToggle');
+    if (!toggle) return;
+    
+    const savedStyle = localStorage.getItem('adminStyle');
+    if (savedStyle === 'clasico') {
+        toggle.checked = true;
+        document.body.classList.add('modo-clasico');
+    }
+    
+    toggle.addEventListener('change', function() {
+        if (this.checked) {
+            document.body.classList.add('modo-clasico');
+            localStorage.setItem('adminStyle', 'clasico');
+        } else {
+            document.body.classList.remove('modo-clasico');
+            localStorage.setItem('adminStyle', 'neon');
+        }
+    });
+}
+
+// ============================================
+// CERRAR SIDEBAR EN MÓVIL
+// ============================================
+function setupSidebarClose() {
+    const closeBtn = document.getElementById('sidebarCloseBtn');
+    const sidebar = document.getElementById('sidebar');
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    
+    if (closeBtn && sidebar) {
+        closeBtn.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+        });
+    }
+    
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+            const isClickInside = sidebar && sidebar.contains(e.target);
+            const isMenuBtn = menuBtn && menuBtn.contains(e.target);
+            if (!isClickInside && !isMenuBtn && sidebar && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        }
     });
 }
