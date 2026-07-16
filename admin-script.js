@@ -2,7 +2,7 @@
 // CONFIGURACIÓN
 // ============================================
 const CONFIG = {
-    staffIds: ['TU_ID_DE_DISCORD'],  // <-- CAMBIA ESTO POR TU ID DE DISCORD
+    staffIds: ['TU_ID_DE_DISCORD'],
     staffToken: 'LosEnmascarados2024_Secure',
     authKey: 'enmascarados_admin_auth'
 };
@@ -128,6 +128,7 @@ async function fetchApplications() {
         
         state.applications = data || [];
         console.log('✅ Cargadas:', state.applications.length, 'postulaciones');
+        console.log('📋 IDs disponibles:', state.applications.map(a => a.id));
         refreshDashboard();
         
     } catch (error) {
@@ -209,17 +210,23 @@ function formatDate(date) {
 }
 
 // ============================================
-// DETALLE Y REVISIÓN
+// DETALLE Y REVISIÓN (CORREGIDO)
 // ============================================
 function openApplicationDetail(appId) {
     console.log('📂 Abriendo detalle de:', appId);
-    const app = state.applications.find(a => a.id === appId);
+    
+    // 🔥 CONVERTIR A NÚMERO si es necesario
+    const id = typeof appId === 'string' ? parseInt(appId) : appId;
+    console.log('🔍 Buscando ID (número):', id);
+    
+    const app = state.applications.find(a => a.id === id);
     if (!app) {
-        console.error('❌ Postulación no encontrada');
+        console.error('❌ Postulación no encontrada. IDs disponibles:', state.applications.map(a => a.id));
+        alert('Error: No se encontró la postulación');
         return;
     }
     
-    state.currentApplicationId = appId;
+    state.currentApplicationId = id;
     document.getElementById('modalTitle').textContent = `Postulación de ${app.discord_nick}`;
     
     document.getElementById('modalBody').innerHTML = `
@@ -355,16 +362,12 @@ function exportToCSV() {
 // EVENTOS
 // ============================================
 function setupEventListeners() {
-    // Login
     document.getElementById('tokenLoginBtn').addEventListener('click', loginWithToken);
     document.getElementById('idLoginBtn').addEventListener('click', loginWithId);
     document.getElementById('staffToken').addEventListener('keypress', e => { if (e.key === 'Enter') loginWithToken(); });
     document.getElementById('staffId').addEventListener('keypress', e => { if (e.key === 'Enter') loginWithId(); });
-    
-    // Logout
     document.getElementById('logoutBtn').addEventListener('click', logout);
     
-    // Navegación
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', e => {
             e.preventDefault();
@@ -372,7 +375,6 @@ function setupEventListeners() {
         });
     });
     
-    // Modal
     document.querySelector('.close-modal').addEventListener('click', closeModal);
     document.getElementById('applicationModal').addEventListener('click', e => {
         if (e.target === e.currentTarget) closeModal();
@@ -380,7 +382,6 @@ function setupEventListeners() {
     document.getElementById('acceptAppBtn').addEventListener('click', () => reviewApplication('accepted'));
     document.getElementById('rejectAppBtn').addEventListener('click', () => reviewApplication('rejected'));
     
-    // Búsqueda
     document.getElementById('searchApps').addEventListener('input', e => {
         const term = e.target.value.toLowerCase();
         const filtered = state.applications.filter(app => 
@@ -391,7 +392,6 @@ function setupEventListeners() {
         displayApplications('allAppsList', filtered);
     });
     
-    // Filtros
     document.getElementById('filterStatus').addEventListener('change', e => {
         const status = e.target.value;
         const filtered = status === 'all' 
@@ -400,16 +400,13 @@ function setupEventListeners() {
         displayApplications('allAppsList', filtered);
     });
     
-    // Botones
     document.getElementById('refreshBtn').addEventListener('click', fetchApplications);
     document.getElementById('exportDataBtn').addEventListener('click', exportToCSV);
     
-    // Móvil
     document.getElementById('mobileMenuBtn').addEventListener('click', () => {
         document.getElementById('sidebar').classList.toggle('open');
     });
     
-    // ESC
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') closeModal();
     });
