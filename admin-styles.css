@@ -1090,3 +1090,199 @@ body::before {
         padding: 1rem;
     }
 }
+
+/* ============================================
+   BOTÓN CERRAR SIDEBAR (MÓVIL)
+   ============================================ */
+.sidebar-close-btn {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 45, 117, 0.1);
+    border: 1px solid rgba(255, 45, 117, 0.2);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.3rem 0.6rem;
+    transition: var(--transition);
+    z-index: 101;
+    clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
+}
+
+.sidebar-close-btn:hover {
+    background: rgba(255, 45, 117, 0.2);
+    border-color: var(--neon-pink);
+}
+
+@media (max-width: 768px) {
+    .sidebar-close-btn {
+        display: block;
+    }
+}
+
+/* ============================================
+   TOGGLE DE ESTILO (NEÓN / CLÁSICO)
+   ============================================ */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.toggle-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 45, 117, 0.15);
+    transition: var(--transition);
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background: var(--text-primary);
+    transition: var(--transition);
+    clip-path: polygon(30% 0%, 100% 0%, 70% 100%, 0% 100%);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: var(--neon-pink);
+    box-shadow: 0 0 30px rgba(255, 45, 117, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(30px);
+}
+
+.toggle-description {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    margin-top: 0.3rem;
+    font-style: italic;
+}
+
+/* ============================================
+   MODO CLÁSICO (cuando el toggle está activado)
+   ============================================ */
+body.modo-clasico .login-card,
+body.modo-clasico .main-content,
+body.modo-clasico .modal-content,
+body.modo-clasico .stat-card,
+body.modo-clasico .application-card,
+body.modo-clasico .setting-card {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+body.modo-clasico .nav-item.active {
+    background: rgba(108, 60, 224, 0.15);
+    color: #a78bfa;
+}
+
+body.modo-clasico .stat-info h3 {
+    color: #a78bfa;
+    text-shadow: none;
+}
+
+body.modo-clasico .btn,
+body.modo-clasico .submit-btn,
+body.modo-clasico .token-btn,
+body.modo-clasico .action-btn {
+    background: #6c3ce0;
+    color: white;
+}
+
+body.modo-clasico .accept-btn {
+    background: #4ade80;
+    color: #000;
+}
+
+body.modo-clasico .reject-btn {
+    background: #f87171;
+    color: #fff;
+}
+
+body.modo-clasico .step.active {
+    background: #6c3ce0;
+}
+
+body.modo-clasico .nav-item:hover {
+    border-left-color: #6c3ce0;
+}
+
+body.modo-clasico .mask-icon {
+    filter: none;
+}
+
+body.modo-clasico .header h1 {
+    background: linear-gradient(135deg, #6c3ce0, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body.modo-clasico .subtitle {
+    color: #a78bfa;
+}
+
+body.modo-clasico .section-number {
+    color: #6c3ce0;
+    text-shadow: none;
+}
+
+body.modo-clasico input:focus,
+body.modo-clasico select:focus,
+body.modo-clasico textarea:focus {
+    border-color: #6c3ce0;
+    box-shadow: 0 0 0 4px rgba(108, 60, 224, 0.05);
+}
+
+body.modo-clasico .radio-label input:checked + .radio-custom {
+    border-color: #6c3ce0;
+    background: #6c3ce0;
+}
+
+body.modo-clasico .checkbox-label input:checked + .checkbox-custom {
+    border-color: #6c3ce0;
+    background: #6c3ce0;
+}
+
+body.modo-clasico .staff-btn {
+    background: rgba(108, 60, 224, 0.1);
+    border-color: rgba(108, 60, 224, 0.2);
+}
+
+body.modo-clasico .staff-btn:hover {
+    background: #6c3ce0;
+    color: white;
+}
