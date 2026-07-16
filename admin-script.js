@@ -2,7 +2,7 @@
 // CONFIGURACIÓN
 // ============================================
 const CONFIG = {
-    staffIds: ['TU_ID_DE_DISCORD'],
+    staffIds: ['TU_ID_DE_DISCORD'],  // <-- CAMBIA ESTO POR TU ID
     staffToken: 'LosEnmascarados2024_Secure',
     authKey: 'enmascarados_admin_auth'
 };
@@ -128,7 +128,7 @@ async function fetchApplications() {
         
         state.applications = data || [];
         console.log('✅ Cargadas:', state.applications.length, 'postulaciones');
-        console.log('📋 IDs disponibles:', state.applications.map(a => a.id));
+        console.log('📋 IDs en state:', state.applications.map(a => a.id));
         refreshDashboard();
         
     } catch (error) {
@@ -215,16 +215,21 @@ function formatDate(date) {
 function openApplicationDetail(appId) {
     console.log('📂 Abriendo detalle de:', appId);
     
-    // 🔥 CONVERTIR A NÚMERO si es necesario
-    const id = typeof appId === 'string' ? parseInt(appId) : appId;
+    // 🔥 CONVERTIR A NÚMERO siempre
+    const id = Number(appId);
     console.log('🔍 Buscando ID (número):', id);
+    console.log('📋 IDs en state:', state.applications.map(a => a.id));
     
+    // Buscar con comparación estricta (número contra número)
     const app = state.applications.find(a => a.id === id);
+    
     if (!app) {
-        console.error('❌ Postulación no encontrada. IDs disponibles:', state.applications.map(a => a.id));
+        console.error('❌ Postulación no encontrada');
         alert('Error: No se encontró la postulación');
         return;
     }
+    
+    console.log('✅ Postulación encontrada:', app.discord_nick);
     
     state.currentApplicationId = id;
     document.getElementById('modalTitle').textContent = `Postulación de ${app.discord_nick}`;
@@ -233,7 +238,7 @@ function openApplicationDetail(appId) {
         <div class="detail-section">
             <div class="detail-label">👤 Información Personal</div>
             <p><strong>Nick:</strong> ${app.discord_nick}</p>
-            <p><strong>ID:</strong> ${app.discord_id}</p>
+            <p><strong>ID de Discord:</strong> ${app.discord_id}</p>
             <p><strong>Edad:</strong> ${app.age} años</p>
             <p><strong>Zona Horaria:</strong> ${app.timezone}</p>
             <p><strong>Idiomas:</strong> ${app.languages}</p>
@@ -251,7 +256,7 @@ function openApplicationDetail(appId) {
         </div>
         <div class="detail-section">
             <div class="detail-label">💪 Motivación</div>
-            <p>${app.motivation || 'No especificada'}</p>
+            <p><strong>Motivación:</strong> ${app.motivation || 'No especificada'}</p>
             <p><strong>Fortalezas:</strong> ${app.strengths || 'No especificadas'}</p>
             ${app.weaknesses ? `<p><strong>Áreas de mejora:</strong> ${app.weaknesses}</p>` : ''}
         </div>
@@ -273,7 +278,10 @@ function closeModal() {
 }
 
 async function reviewApplication(status) {
-    if (!state.currentApplicationId) return;
+    if (!state.currentApplicationId) {
+        alert('Error: No hay postulación seleccionada');
+        return;
+    }
     
     const notes = document.getElementById('reviewNotes').value;
     const client = window.supabase;
@@ -296,10 +304,10 @@ async function reviewApplication(status) {
         
         closeModal();
         alert(`Postulación ${status === 'accepted' ? 'aceptada ✅' : 'rechazada ❌'}`);
-        fetchApplications();
+        fetchApplications(); // Recargar lista
         
     } catch (error) {
-        alert('Error al guardar la revisión');
+        alert('Error al guardar la revisión: ' + error.message);
     }
 }
 
@@ -333,7 +341,7 @@ function switchView(viewName) {
 // ============================================
 function exportToCSV() {
     if (state.applications.length === 0) {
-        alert('No hay postulaciones');
+        alert('No hay postulaciones para exportar');
         return;
     }
     
@@ -362,12 +370,16 @@ function exportToCSV() {
 // EVENTOS
 // ============================================
 function setupEventListeners() {
+    // Login
     document.getElementById('tokenLoginBtn').addEventListener('click', loginWithToken);
     document.getElementById('idLoginBtn').addEventListener('click', loginWithId);
     document.getElementById('staffToken').addEventListener('keypress', e => { if (e.key === 'Enter') loginWithToken(); });
     document.getElementById('staffId').addEventListener('keypress', e => { if (e.key === 'Enter') loginWithId(); });
+    
+    // Logout
     document.getElementById('logoutBtn').addEventListener('click', logout);
     
+    // Navegación
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', e => {
             e.preventDefault();
@@ -375,6 +387,7 @@ function setupEventListeners() {
         });
     });
     
+    // Modal
     document.querySelector('.close-modal').addEventListener('click', closeModal);
     document.getElementById('applicationModal').addEventListener('click', e => {
         if (e.target === e.currentTarget) closeModal();
@@ -382,6 +395,7 @@ function setupEventListeners() {
     document.getElementById('acceptAppBtn').addEventListener('click', () => reviewApplication('accepted'));
     document.getElementById('rejectAppBtn').addEventListener('click', () => reviewApplication('rejected'));
     
+    // Búsqueda
     document.getElementById('searchApps').addEventListener('input', e => {
         const term = e.target.value.toLowerCase();
         const filtered = state.applications.filter(app => 
@@ -392,6 +406,7 @@ function setupEventListeners() {
         displayApplications('allAppsList', filtered);
     });
     
+    // Filtros
     document.getElementById('filterStatus').addEventListener('change', e => {
         const status = e.target.value;
         const filtered = status === 'all' 
@@ -400,13 +415,16 @@ function setupEventListeners() {
         displayApplications('allAppsList', filtered);
     });
     
+    // Botones
     document.getElementById('refreshBtn').addEventListener('click', fetchApplications);
     document.getElementById('exportDataBtn').addEventListener('click', exportToCSV);
     
+    // Móvil
     document.getElementById('mobileMenuBtn').addEventListener('click', () => {
         document.getElementById('sidebar').classList.toggle('open');
     });
     
+    // ESC
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') closeModal();
     });
