@@ -55,7 +55,13 @@
 
     <!-- PANEL -->
     <div id="adminPanel" class="admin-panel hidden">
+        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
+            <!-- Botón cerrar móvil -->
+            <button class="sidebar-close-btn" id="sidebarCloseBtn">
+                <i class="fas fa-times"></i>
+            </button>
+            
             <div class="sidebar-header">
                 <div class="sidebar-logo">🎭</div>
                 <h2>Los Enmascarados</h2>
@@ -106,28 +112,28 @@
             <div class="view active" id="dashboardView">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon" style="background:rgba(108,60,224,0.2);">📥</div>
+                        <div class="stat-icon" style="background:rgba(255,45,117,0.1);">📥</div>
                         <div class="stat-info">
                             <h3 id="totalNew">0</h3>
                             <p>Nuevas</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon" style="background:rgba(74,222,128,0.2);">✅</div>
+                        <div class="stat-icon" style="background:rgba(57,255,20,0.05);">✅</div>
                         <div class="stat-info">
                             <h3 id="totalAccepted">0</h3>
                             <p>Aceptadas</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon" style="background:rgba(248,113,113,0.2);">❌</div>
+                        <div class="stat-icon" style="background:rgba(255,45,117,0.05);">❌</div>
                         <div class="stat-info">
                             <h3 id="totalRejected">0</h3>
                             <p>Rechazadas</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon" style="background:rgba(251,191,36,0.2);">📊</div>
+                        <div class="stat-icon" style="background:rgba(0,245,255,0.05);">📊</div>
                         <div class="stat-info">
                             <h3 id="totalAll">0</h3>
                             <p>Total</p>
@@ -170,6 +176,18 @@
             <div class="view" id="settingsView">
                 <h2>⚙️ Configuración</h2>
                 <div class="settings-container">
+                    <div class="setting-card">
+                        <h3>🎨 Estilo Visual</h3>
+                        <div class="toggle-container">
+                            <span class="toggle-label">Modo Clásico</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="styleToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label">Modo Neón</span>
+                        </div>
+                        <p class="toggle-description">Cambia entre el estilo neón cyberpunk y el estilo clásico</p>
+                    </div>
                     <div class="setting-card">
                         <h3>📁 Gestión de Datos</h3>
                         <button id="exportDataBtn" class="action-button">
