@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM cargado');
     console.log('🟢 Supabase:', typeof supabase !== 'undefined' ? 'Conectado ✅' : 'Error ❌');
     
-    // Referencias a elementos
     const form = document.getElementById('postulacionForm');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -263,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // ============================================
-    // ENVIAR FORMULARIO
+    // ENVIAR FORMULARIO (CORREGIDO)
     // ============================================
     async function handleSubmit(event) {
         event.preventDefault();
@@ -284,7 +283,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
         submitBtn.style.opacity = '0.6';
-        submitBtn.querySelector('.btn-text').textContent = 'Enviando...';
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = '⏳ Enviando...';
         
         try {
             const formData = getFormData();
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 isSubmitting = false;
                 submitBtn.disabled = false;
                 submitBtn.style.opacity = '1';
-                submitBtn.querySelector('.btn-text').textContent = 'Enviar Postulación';
+                submitBtn.textContent = originalText;
             }, 2000);
         }
         
