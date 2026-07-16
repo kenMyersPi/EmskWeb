@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <!-- Botón Staff -->
     <div class="staff-corner">
         <button id="staffLoginBtn" class="staff-btn" title="Acceso Staff">
             <span class="staff-icon">🛡️</span>
@@ -21,6 +22,7 @@
     </div>
 
     <div class="container">
+        <!-- Header -->
         <header class="header">
             <div class="logo-container">
                 <div class="mask-icon">🎭</div>
@@ -30,6 +32,7 @@
             <p class="header-description">Completa el formulario para postularte como moderador.</p>
         </header>
 
+        <!-- Barra de progreso -->
         <div class="progress-container">
             <div class="progress-bar" id="progressBar"></div>
             <div class="progress-steps">
@@ -40,6 +43,7 @@
             </div>
         </div>
 
+        <!-- Formulario -->
         <main class="main-content">
             <form id="postulacionForm" class="application-form" novalidate>
                 
@@ -95,10 +99,14 @@
                         <label>🛡️ ¿Tienes experiencia previa? *</label>
                         <div class="radio-group">
                             <label class="radio-label">
-                                <input type="radio" name="hasExperience" value="si" required> Sí
+                                <input type="radio" name="hasExperience" value="si" required>
+                                <span class="radio-custom"></span>
+                                Sí
                             </label>
                             <label class="radio-label">
-                                <input type="radio" name="hasExperience" value="no"> No
+                                <input type="radio" name="hasExperience" value="no">
+                                <span class="radio-custom"></span>
+                                No
                             </label>
                         </div>
                     </div>
@@ -140,8 +148,16 @@
                     <div class="form-group">
                         <label>📜 ¿Conoces las reglas de Discord? *</label>
                         <div class="radio-group">
-                            <label class="radio-label"><input type="radio" name="discordRules" value="si" required> Sí</label>
-                            <label class="radio-label"><input type="radio" name="discordRules" value="no"> No mucho</label>
+                            <label class="radio-label">
+                                <input type="radio" name="discordRules" value="si" required>
+                                <span class="radio-custom"></span>
+                                Sí
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="discordRules" value="no">
+                                <span class="radio-custom"></span>
+                                No mucho
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -171,16 +187,18 @@
                     <div class="form-group">
                         <label class="checkbox-label terms">
                             <input type="checkbox" id="termsAccepted" required>
+                            <span class="checkbox-custom"></span>
                             Acepto que mis datos sean revisados por <strong>Los Enmascarados</strong> *
                         </label>
                     </div>
                 </div>
 
-                <!-- BOTONES -->
+                <!-- Navegación -->
                 <div class="form-navigation">
-                                    <button type="submit" class="submit-btn" id="submitBtn" style="display:none;">
-                        <span class="btn-text">Enviar Postulación</span>
-                        <span class="btn-icon">📤</span>
+                    <button type="button" class="nav-btn prev-btn" id="prevBtn" style="display:none;">← Anterior</button>
+                    <button type="button" class="nav-btn next-btn" id="nextBtn">Siguiente →</button>
+                    <button type="submit" class="submit-btn" id="submitBtn" style="display:none;">
+                        Enviar Postulación 📤
                     </button>
                 </div>
 
@@ -195,15 +213,16 @@
 
     <!-- 🔷 INICIALIZAR SUPABASE -->
     <script>
-        // 🔥 CONFIGURACIÓN DE SUPABASE - URL CORRECTA (SIN /rest/v1/)
+        // 🔥 CONFIGURACIÓN DE SUPABASE - CAMBIA ESTOS VALORES
         const SUPABASE_URL = 'https://nvuhvqvrxwhpbcuydhtn.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable__7UUW0nCs5OWsFGlLdn7Wg_4y3qUlmC';
+        const SUPABASE_ANON_KEY = 'sb_publishable__7UUW0nCs50WsFGLLdn7Wg_4y3qU...';
 
-        window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabase = supabaseClient;
         console.log('🟢 Supabase conectado');
 
         // Verificar conexión
-        window.supabase.from('postulaciones').select('count', { count: 'exact', head: true })
+        supabaseClient.from('postulaciones').select('count', { count: 'exact', head: true })
             .then(() => console.log('✅ Tabla postulaciones accesible'))
             .catch(err => console.error('❌ Error:', err));
     </script>
