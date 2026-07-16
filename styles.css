@@ -2,17 +2,22 @@
    VARIABLES Y RESET
    ============================================ */
 :root {
-    --primary: #6c3ce0;
-    --primary-hover: #5a2fd0;
-    --bg: #1a1a2e;
-    --card-bg: #16213e;
+    --primary: #7c3aed;
+    --primary-light: #a78bfa;
+    --primary-dark: #5b21b6;
+    --secondary: #06b6d4;
+    --bg-dark: #0f0e17;
+    --bg-card: rgba(26, 26, 46, 0.85);
+    --bg-input: rgba(30, 42, 74, 0.6);
     --text: #ffffff;
-    --text-secondary: #a0a0b8;
-    --input-bg: #1e2a4a;
-    --border: #2a3a5e;
-    --success: #4ade80;
+    --text-secondary: #94a3b8;
+    --success: #34d399;
     --error: #f87171;
     --warning: #fbbf24;
+    --border: rgba(124, 58, 237, 0.3);
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --radius: 16px;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -23,15 +28,61 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background: var(--bg-dark);
     color: var(--text);
     min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* 🔮 Fondo con partículas animadas */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(ellipse at 10% 20%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, 0.05) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ✨ Partículas flotantes */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(2px 2px at 60% 20%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(2px 2px at 80% 80%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.4), transparent);
+    background-size: 200px 200px;
+    z-index: 0;
+    pointer-events: none;
+    animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1rem;
+    position: relative;
+    z-index: 1;
 }
 
 /* ============================================
@@ -45,24 +96,31 @@ body {
 }
 
 .staff-btn {
-    background: rgba(108, 60, 224, 0.2);
-    border: 1px solid var(--primary);
+    background: rgba(124, 58, 237, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
     color: var(--text);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
     cursor: pointer;
     font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s;
-    backdrop-filter: blur(10px);
+    gap: 0.6rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.2);
 }
 
 .staff-btn:hover {
     background: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(108, 60, 224, 0.4);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+}
+
+.staff-icon {
+    font-size: 1rem;
 }
 
 /* ============================================
@@ -70,7 +128,8 @@ body {
    ============================================ */
 .header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    animation: fadeInDown 0.8s ease-out;
 }
 
 .logo-container {
@@ -78,7 +137,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .mask-icon {
@@ -87,29 +146,31 @@ body {
 }
 
 .header h1 {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #6c3ce0, #a78bfa);
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 40px rgba(124, 58, 237, 0.3);
 }
 
 .subtitle {
     font-size: 1.1rem;
     color: var(--text-secondary);
     font-weight: 300;
-    letter-spacing: 2px;
+    letter-spacing: 4px;
     text-transform: uppercase;
 }
 
 .header-description {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     margin-top: 0.5rem;
 }
 
 /* ============================================
-   PROGRESO
+   BARRA DE PROGRESO
    ============================================ */
 .progress-container {
     margin-bottom: 2rem;
@@ -117,11 +178,25 @@ body {
 
 .progress-bar {
     height: 4px;
-    background: var(--border);
-    border-radius: 2px;
+    background: rgba(124, 58, 237, 0.2);
+    border-radius: 4px;
     margin-bottom: 1rem;
-    transition: width 0.5s ease;
+    transition: width 0.6s ease;
     width: 0%;
+    position: relative;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 4px;
+    filter: blur(4px);
+    opacity: 0.5;
 }
 
 .progress-steps {
@@ -137,57 +212,93 @@ body {
     left: 0;
     right: 0;
     height: 2px;
-    background: var(--border);
+    background: rgba(124, 58, 237, 0.15);
     z-index: 0;
     transform: translateY(-50%);
 }
 
 .step {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: var(--input-bg);
-    border: 2px solid var(--border);
+    background: var(--bg-input);
+    border: 2px solid rgba(124, 58, 237, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
+    font-size: 0.9rem;
     color: var(--text-secondary);
     position: relative;
     z-index: 1;
-    transition: all 0.3s;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.step:hover {
+    transform: scale(1.1);
 }
 
 .step.active {
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     border-color: var(--primary);
     color: white;
-    box-shadow: 0 0 20px rgba(108, 60, 224, 0.5);
+    box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+    transform: scale(1.1);
 }
 
 .step.completed {
     background: var(--success);
     border-color: var(--success);
     color: white;
+    box-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
 }
 
 /* ============================================
-   FORMULARIO
+   FORMULARIO PRINCIPAL
    ============================================ */
 .main-content {
-    background: var(--card-bg);
-    border-radius: 20px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius);
     padding: 2.5rem;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.main-content::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(124, 58, 237, 0.05), transparent 60%);
+    pointer-events: none;
 }
 
 .form-section {
     display: none;
+    animation: fadeSlide 0.5s ease-out;
 }
 
 .form-section.active {
     display: block;
+}
+
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .section-header {
@@ -196,66 +307,95 @@ body {
     gap: 1rem;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .section-number {
     font-size: 2rem;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--primary), #a78bfa);
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .section-header h2 {
     font-size: 1.5rem;
+    font-weight: 600;
 }
 
 /* ============================================
-   GRUPOS
+   GRUPOS DE FORMULARIO
    ============================================ */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.8rem;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
 }
 
 label {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
     font-weight: 500;
-    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text);
 }
 
+.label-icon {
+    font-size: 1.2rem;
+}
+
+/* ============================================
+   INPUTS
+   ============================================ */
 input[type="text"],
 input[type="number"],
 select,
 textarea {
     width: 100%;
     padding: 1rem 1.2rem;
-    background: var(--input-bg);
-    border: 2px solid var(--border);
+    background: var(--bg-input);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(124, 58, 237, 0.15);
     border-radius: 12px;
     color: var(--text);
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
-    transition: all 0.3s;
+    transition: var(--transition);
+    resize: vertical;
 }
 
-input:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
 select:focus,
 textarea:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(108, 60, 224, 0.1);
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1), 0 0 30px rgba(124, 58, 237, 0.05);
+    background: rgba(30, 42, 74, 0.8);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: rgba(148, 163, 184, 0.5);
 }
 
 select {
+    cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a0a0b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     padding-right: 2.5rem;
+}
+
+select option {
+    background: var(--bg-dark);
+    color: var(--text);
 }
 
 .helper-text {
@@ -280,17 +420,19 @@ select {
     align-items: center;
     gap: 0.8rem;
     cursor: pointer;
-    padding: 0.8rem;
-    background: var(--input-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    transition: all 0.3s;
+    padding: 0.9rem 1.2rem;
+    background: var(--bg-input);
+    border: 1px solid rgba(124, 58, 237, 0.1);
+    border-radius: 12px;
+    transition: var(--transition);
+    position: relative;
 }
 
 .radio-label:hover,
 .checkbox-label:hover {
     border-color: var(--primary);
-    background: #243352;
+    background: rgba(124, 58, 237, 0.08);
+    transform: translateX(4px);
 }
 
 .radio-label input,
@@ -299,28 +441,29 @@ select {
 }
 
 .radio-custom {
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--border);
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(148, 163, 184, 0.3);
     border-radius: 50%;
     position: relative;
-    transition: all 0.3s;
+    transition: var(--transition);
     flex-shrink: 0;
 }
 
 .checkbox-custom {
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--border);
-    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(148, 163, 184, 0.3);
+    border-radius: 6px;
     position: relative;
-    transition: all 0.3s;
+    transition: var(--transition);
     flex-shrink: 0;
 }
 
 .radio-label input:checked + .radio-custom {
     border-color: var(--primary);
     background: var(--primary);
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
 }
 
 .radio-label input:checked + .radio-custom::after {
@@ -338,6 +481,7 @@ select {
 .checkbox-label input:checked + .checkbox-custom {
     border-color: var(--primary);
     background: var(--primary);
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
 }
 
 .checkbox-label input:checked + .checkbox-custom::after {
@@ -347,17 +491,17 @@ select {
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
 }
 
 .terms {
-    background: rgba(108, 60, 224, 0.1);
-    border: 1px solid rgba(108, 60, 224, 0.3);
+    background: rgba(124, 58, 237, 0.06);
+    border: 1px solid rgba(124, 58, 237, 0.15);
 }
 
 .terms strong {
-    color: var(--primary);
+    color: var(--primary-light);
 }
 
 /* ============================================
@@ -366,50 +510,72 @@ select {
 .form-navigation {
     display: flex;
     justify-content: space-between;
-    margin-top: 2rem;
+    align-items: center;
+    margin-top: 2.5rem;
     gap: 1rem;
 }
 
 .nav-btn {
-    padding: 0.8rem 1.5rem;
-    border: 2px solid var(--border);
-    background: transparent;
+    padding: 0.8rem 2rem;
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    background: rgba(124, 58, 237, 0.05);
     color: var(--text);
-    border-radius: 10px;
-    font-weight: 600;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: var(--transition);
     font-family: 'Poppins', sans-serif;
+    backdrop-filter: blur(10px);
 }
 
 .nav-btn:hover {
     border-color: var(--primary);
-    background: rgba(108, 60, 224, 0.1);
+    background: rgba(124, 58, 237, 0.15);
     transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.15);
 }
 
 .submit-btn {
     width: 100%;
     padding: 1.2rem;
-    background: linear-gradient(135deg, #6c3ce0, #8b5cf6);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: 50px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: var(--transition);
     font-family: 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.submit-btn:hover::before {
+    left: 100%;
 }
 
 .submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(108, 60, 224, 0.4);
+    box-shadow: 0 10px 40px rgba(124, 58, 237, 0.4);
 }
 
 .submit-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
 }
 
 /* ============================================
@@ -417,13 +583,15 @@ select {
    ============================================ */
 .message-container {
     margin-top: 1.5rem;
-    padding: 1rem 1.2rem;
+    padding: 1rem 1.5rem;
     border-radius: 12px;
     font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+    backdrop-filter: blur(10px);
 }
 
 .message-container.success {
-    background: rgba(74, 222, 128, 0.1);
+    background: rgba(52, 211, 153, 0.1);
     border: 1px solid var(--success);
     color: var(--success);
 }
@@ -449,7 +617,7 @@ select {
    ============================================ */
 .footer {
     text-align: center;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     color: var(--text-secondary);
     font-size: 0.85rem;
 }
@@ -457,9 +625,42 @@ select {
 /* ============================================
    ANIMACIONES
    ============================================ */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-12px); }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ============================================
@@ -470,15 +671,17 @@ select {
     .main-content { padding: 1.5rem; }
     .header h1 { font-size: 2rem; }
     .mask-icon { font-size: 2.5rem; }
+    .section-number { font-size: 1.5rem; }
     .staff-text { display: none; }
-    .staff-btn { padding: 0.5rem; border-radius: 50%; width: 40px; height: 40px; justify-content: center; }
+    .staff-btn { padding: 0.5rem; border-radius: 50%; width: 44px; height: 44px; justify-content: center; }
     .form-navigation { flex-direction: column; }
     .nav-btn { width: 100%; text-align: center; }
 }
 
 @media (max-width: 480px) {
-    .header h1 { font-size: 1.5rem; }
+    .header h1 { font-size: 1.6rem; }
     .subtitle { font-size: 0.8rem; }
     .main-content { padding: 1.2rem; }
-    .step { width: 35px; height: 35px; font-size: 0.8rem; }
+    .step { width: 38px; height: 38px; font-size: 0.8rem; }
+    input, select, textarea { padding: 0.8rem 1rem; font-size: 0.9rem; }
 }
