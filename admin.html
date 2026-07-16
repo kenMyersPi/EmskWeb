@@ -13,7 +13,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <!-- LOGIN -->
+    <!-- ============================================ -->
+    <!-- PANTALLA DE LOGIN -->
+    <!-- ============================================ -->
     <div id="loginScreen" class="login-screen">
         <div class="login-container">
             <div class="login-header">
@@ -21,10 +23,13 @@
                 <h1>Panel Staff</h1>
                 <p>Los Enmascarados</p>
             </div>
+            
             <div class="login-card">
                 <h2>🔐 Acceso Restringido</h2>
                 <p class="login-description">Solo para miembros del staff autorizados</p>
+                
                 <div class="login-methods">
+                    <!-- Token -->
                     <div class="token-login">
                         <label for="staffToken">Token de acceso</label>
                         <div class="token-input-group">
@@ -34,7 +39,12 @@
                             </button>
                         </div>
                     </div>
-                    <div class="divider"><span>o</span></div>
+                    
+                    <div class="divider">
+                        <span>o</span>
+                    </div>
+                    
+                    <!-- ID de Discord -->
                     <div class="id-login">
                         <label for="staffId">ID de Discord</label>
                         <div class="token-input-group">
@@ -48,33 +58,43 @@
                         </span>
                     </div>
                 </div>
+                
                 <div id="loginMessage" class="login-message hidden"></div>
             </div>
         </div>
     </div>
 
-    <!-- PANEL -->
+    <!-- ============================================ -->
+    <!-- PANEL PRINCIPAL -->
+    <!-- ============================================ -->
     <div id="adminPanel" class="admin-panel hidden">
+        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">🎭</div>
                 <h2>Los Enmascarados</h2>
             </div>
+            
             <nav class="sidebar-nav">
                 <a href="#" class="nav-item active" data-view="dashboard">
-                    <i class="fas fa-th-large"></i><span>Dashboard</span>
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
                 </a>
                 <a href="#" class="nav-item" data-view="applications">
-                    <i class="fas fa-users"></i><span>Postulaciones</span>
+                    <i class="fas fa-users"></i>
+                    <span>Postulaciones</span>
                     <span class="badge" id="newAppsBadge">0</span>
                 </a>
                 <a href="#" class="nav-item" data-view="reviewed">
-                    <i class="fas fa-check-circle"></i><span>Revisadas</span>
+                    <i class="fas fa-check-circle"></i>
+                    <span>Revisadas</span>
                 </a>
                 <a href="#" class="nav-item" data-view="settings">
-                    <i class="fas fa-cog"></i><span>Configuración</span>
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
                 </a>
             </nav>
+            
             <div class="sidebar-footer">
                 <div class="user-info">
                     <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="user-avatar">
@@ -83,26 +103,34 @@
                         <span class="user-role">Moderador</span>
                     </div>
                 </div>
-                <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+                <button id="logoutBtn" class="logout-btn" title="Cerrar sesión">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
         </aside>
 
+        <!-- Contenido Principal -->
         <main class="main-panel">
+            <!-- Header -->
             <header class="panel-header">
                 <div class="header-left">
-                    <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+                    <button id="mobileMenuBtn" class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <h1 id="currentView">Dashboard</h1>
                 </div>
                 <div class="header-right">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="searchApps" placeholder="Buscar...">
+                        <input type="text" id="searchApps" placeholder="Buscar postulaciones...">
                     </div>
-                    <button class="refresh-btn" id="refreshBtn"><i class="fas fa-sync-alt"></i></button>
+                    <button class="refresh-btn" id="refreshBtn" title="Actualizar">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
                 </div>
             </header>
 
-            <!-- Dashboard -->
+            <!-- Dashboard View -->
             <div class="view active" id="dashboardView">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -134,6 +162,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="recent-applications">
                     <h2>📋 Postulaciones Recientes</h2>
                     <div id="recentAppsList" class="apps-list">
@@ -142,23 +171,25 @@
                 </div>
             </div>
 
-            <!-- Postulaciones -->
+            <!-- Applications View -->
             <div class="view" id="applicationsView">
                 <div class="view-header">
                     <h2>📝 Todas las Postulaciones</h2>
-                    <select id="filterStatus">
-                        <option value="all">Todas</option>
-                        <option value="new">Nuevas</option>
-                        <option value="accepted">Aceptadas</option>
-                        <option value="rejected">Rechazadas</option>
-                    </select>
+                    <div class="filter-options">
+                        <select id="filterStatus">
+                            <option value="all">Todas</option>
+                            <option value="new">Nuevas</option>
+                            <option value="accepted">Aceptadas</option>
+                            <option value="rejected">Rechazadas</option>
+                        </select>
+                    </div>
                 </div>
                 <div id="allAppsList" class="apps-list">
                     <p class="empty-state">Cargando...</p>
                 </div>
             </div>
 
-            <!-- Revisadas -->
+            <!-- Reviewed View -->
             <div class="view" id="reviewedView">
                 <h2>✅ Postulaciones Revisadas</h2>
                 <div id="reviewedAppsList" class="apps-list">
@@ -166,7 +197,7 @@
                 </div>
             </div>
 
-            <!-- Configuración -->
+            <!-- Settings View -->
             <div class="view" id="settingsView">
                 <h2>⚙️ Configuración</h2>
                 <div class="settings-container">
@@ -176,25 +207,32 @@
                             <i class="fas fa-download"></i> Exportar CSV
                         </button>
                     </div>
+                    
                     <div class="setting-card">
                         <h3>ℹ️ Información</h3>
-                        <p>Total: <strong id="infoTotal">0</strong></p>
-                        <p>Última actualización: <strong id="infoLastUpdate">Nunca</strong></p>
-                        <p>Versión: 2.0 (Supabase)</p>
+                        <div style="color:#a0a0b8;font-size:0.9rem;">
+                            <p>Total postulaciones: <strong id="infoTotal">0</strong></p>
+                            <p>Última actualización: <strong id="infoLastUpdate">Nunca</strong></p>
+                            <p>Versión: 2.0 (Supabase)</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- MODAL -->
+    <!-- ============================================ -->
+    <!-- MODAL DE DETALLE -->
+    <!-- ============================================ -->
     <div id="applicationModal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Detalle</h2>
+                <h2 id="modalTitle">Detalle de Postulación</h2>
                 <button class="close-modal">&times;</button>
             </div>
-            <div id="modalBody" class="modal-body"></div>
+            <div id="modalBody" class="modal-body">
+                <!-- Contenido dinámico -->
+            </div>
             <div class="modal-footer">
                 <div class="modal-actions">
                     <button class="action-btn reject-btn" id="rejectAppBtn">
@@ -204,7 +242,7 @@
                         <i class="fas fa-check"></i> Aceptar
                     </button>
                 </div>
-                <textarea id="reviewNotes" placeholder="Notas de revisión..."></textarea>
+                <textarea id="reviewNotes" placeholder="Notas de revisión (opcional)..."></textarea>
                 <button class="save-review-btn" id="saveReviewBtn">
                     <i class="fas fa-save"></i> Guardar Revisión
                 </button>
@@ -212,7 +250,9 @@
         </div>
     </div>
 
-    <!-- 🔷 SUPABASE -->
+    <!-- ============================================ -->
+    <!-- INICIALIZAR SUPABASE -->
+    <!-- ============================================ -->
     <script>
         const SUPABASE_URL = 'https://nvuhvqvrxwhpbcuydhtn.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable__7UUW0nCs5OWsFGlLdn7Wg_4y3qUlmC';
