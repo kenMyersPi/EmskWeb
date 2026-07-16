@@ -9,7 +9,7 @@
     --neon-green: #39ff14;
     --bg-primary: #0a0a0f;
     --bg-secondary: #12121e;
-    --bg-card: rgba(18, 18, 30, 0.9);
+    --bg-card: rgba(18, 18, 30, 0.85);
     --bg-sidebar: rgba(10, 10, 15, 0.95);
     --text-primary: #f0f0ff;
     --text-secondary: #8888aa;
@@ -18,6 +18,7 @@
     --border-neon: 1px solid rgba(255, 45, 117, 0.15);
     --radius: 0px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --blur-amount: 20px;
 }
 
 * {
@@ -35,7 +36,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Fondo con efecto neón */
+/* Fondo con efecto neón - DESACTIVADO EN MODO LIVIANO */
 body::before {
     content: '';
     position: fixed;
@@ -49,6 +50,7 @@ body::before {
         radial-gradient(ellipse at 50% 50%, rgba(176, 38, 255, 0.03) 0%, transparent 60%);
     z-index: 0;
     pointer-events: none;
+    transition: opacity 0.5s ease;
 }
 
 /* ============================================
@@ -79,6 +81,7 @@ body::before {
     margin-bottom: 0.5rem;
     filter: drop-shadow(0 0 40px rgba(255, 45, 117, 0.3));
     animation: float 3s ease-in-out infinite;
+    transition: all 0.5s ease;
 }
 
 .login-header h1 {
@@ -91,6 +94,7 @@ body::before {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     filter: drop-shadow(0 0 30px rgba(255, 45, 117, 0.15));
+    transition: all 0.5s ease;
 }
 
 .login-header p {
@@ -102,10 +106,11 @@ body::before {
 
 .login-card {
     background: var(--bg-card);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(var(--blur-amount));
     border: var(--border-neon);
     padding: 2.5rem;
     box-shadow: var(--glow-pink);
+    transition: all 0.5s ease;
 }
 
 .login-card h2 {
@@ -114,6 +119,7 @@ body::before {
     text-shadow: var(--glow-pink);
     font-size: 1.2rem;
     letter-spacing: 3px;
+    transition: all 0.5s ease;
 }
 
 .login-description {
@@ -241,12 +247,12 @@ body::before {
 }
 
 /* ============================================
-   SIDEBAR - ESTILO NEÓN
+   SIDEBAR
    ============================================ */
 .sidebar {
     width: 280px;
     background: var(--bg-sidebar);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(var(--blur-amount));
     border-right: var(--border-neon);
     display: flex;
     flex-direction: column;
@@ -255,7 +261,28 @@ body::before {
     left: 0;
     bottom: 0;
     z-index: 100;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 0.5s ease;
+}
+
+.sidebar-close-btn {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 45, 117, 0.1);
+    border: 1px solid rgba(255, 45, 117, 0.2);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.3rem 0.6rem;
+    transition: var(--transition);
+    z-index: 101;
+    clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
+}
+
+.sidebar-close-btn:hover {
+    background: rgba(255, 45, 117, 0.2);
+    border-color: var(--neon-pink);
 }
 
 .sidebar-header {
@@ -268,6 +295,7 @@ body::before {
     font-size: 3rem;
     filter: drop-shadow(0 0 30px rgba(255, 45, 117, 0.2));
     animation: float 3s ease-in-out infinite;
+    transition: all 0.5s ease;
 }
 
 .sidebar-header h2 {
@@ -279,6 +307,7 @@ body::before {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    transition: all 0.5s ease;
 }
 
 .sidebar-nav {
@@ -456,6 +485,7 @@ body::before {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    transition: all 0.5s ease;
 }
 
 .header-right {
@@ -541,7 +571,7 @@ body::before {
 
 .stat-card {
     background: var(--bg-card);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(var(--blur-amount));
     border: var(--border-neon);
     padding: 1.2rem 1.5rem;
     display: flex;
@@ -575,6 +605,7 @@ body::before {
     line-height: 1.2;
     color: var(--neon-pink);
     text-shadow: var(--glow-pink);
+    transition: all 0.5s ease;
 }
 
 .stat-info p {
@@ -594,7 +625,7 @@ body::before {
 
 .application-card {
     background: var(--bg-card);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(var(--blur-amount));
     border: var(--border-neon);
     padding: 1.2rem 1.5rem;
     cursor: pointer;
@@ -729,7 +760,7 @@ body::before {
 
 .modal-content {
     background: var(--bg-card);
-    backdrop-filter: blur(30px);
+    backdrop-filter: blur(var(--blur-amount));
     border: var(--border-neon);
     max-width: 780px;
     width: 100%;
@@ -737,6 +768,7 @@ body::before {
     overflow-y: auto;
     box-shadow: var(--glow-pink);
     animation: slideUp 0.4s ease-out;
+    transition: all 0.5s ease;
 }
 
 .modal-header {
@@ -748,7 +780,7 @@ body::before {
     position: sticky;
     top: 0;
     background: var(--bg-card);
-    backdrop-filter: blur(30px);
+    backdrop-filter: blur(var(--blur-amount));
     z-index: 1;
 }
 
@@ -759,6 +791,7 @@ body::before {
     letter-spacing: 2px;
     color: var(--neon-pink);
     text-shadow: var(--glow-pink);
+    transition: all 0.5s ease;
 }
 
 .close-modal {
@@ -800,6 +833,7 @@ body::before {
     letter-spacing: 3px;
     margin-bottom: 0.4rem;
     font-weight: 600;
+    transition: all 0.5s ease;
 }
 
 .detail-section p {
@@ -822,7 +856,7 @@ body::before {
     position: sticky;
     bottom: 0;
     background: var(--bg-card);
-    backdrop-filter: blur(30px);
+    backdrop-filter: blur(var(--blur-amount));
 }
 
 .modal-actions {
@@ -921,10 +955,11 @@ body::before {
 
 .setting-card {
     background: var(--bg-card);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(var(--blur-amount));
     border: var(--border-neon);
     padding: 1.5rem 2rem;
     clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: all 0.5s ease;
 }
 
 .setting-card h3 {
@@ -934,196 +969,9 @@ body::before {
     letter-spacing: 2px;
     font-size: 0.9rem;
     color: var(--neon-cyan);
+    transition: all 0.5s ease;
 }
 
-.action-button {
-    padding: 0.6rem 1.5rem;
-    background: var(--neon-cyan);
-    color: #000;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    transition: var(--transition);
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 0.8rem;
-    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-}
-
-.action-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 40px rgba(0, 245, 255, 0.2);
-}
-
-/* ============================================
-   ANIMACIONES
-   ============================================ */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
-    }
-    .sidebar.open {
-        transform: translateX(0);
-        box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-    }
-    .main-panel {
-        margin-left: 0;
-        padding: 1.2rem;
-    }
-    .mobile-menu-btn {
-        display: block;
-    }
-    .search-box input {
-        width: 140px;
-    }
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
-    }
-    .stat-card {
-        padding: 1rem;
-    }
-    .stat-info h3 {
-        font-size: 1.4rem;
-    }
-    .modal-actions {
-        flex-direction: column;
-    }
-    .login-card {
-        padding: 1.5rem;
-    }
-    .panel-header h1 {
-        font-size: 1.2rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .main-panel {
-        padding: 0.8rem;
-    }
-    .panel-header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.6rem;
-    }
-    .header-right {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-    .search-box input {
-        width: 100%;
-    }
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.6rem;
-    }
-    .stat-card {
-        padding: 0.8rem;
-    }
-    .stat-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 1.2rem;
-    }
-    .stat-info h3 {
-        font-size: 1.1rem;
-    }
-    .login-header h1 {
-        font-size: 2rem;
-        letter-spacing: 4px;
-    }
-    .application-card {
-        padding: 0.8rem 1rem;
-    }
-    .app-avatar {
-        width: 36px;
-        height: 36px;
-        font-size: 0.9rem;
-    }
-    .modal-content {
-        max-height: 95vh;
-    }
-    .modal-header,
-    .modal-footer {
-        padding: 1rem;
-    }
-    .modal-body {
-        padding: 1rem;
-    }
-}
-
-/* ============================================
-   BOTÓN CERRAR SIDEBAR (MÓVIL)
-   ============================================ */
-.sidebar-close-btn {
-    display: none;
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: rgba(255, 45, 117, 0.1);
-    border: 1px solid rgba(255, 45, 117, 0.2);
-    color: var(--text-primary);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0.3rem 0.6rem;
-    transition: var(--transition);
-    z-index: 101;
-    clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
-}
-
-.sidebar-close-btn:hover {
-    background: rgba(255, 45, 117, 0.2);
-    border-color: var(--neon-pink);
-}
-
-@media (max-width: 768px) {
-    .sidebar-close-btn {
-        display: block;
-    }
-}
-
-/* ============================================
-   TOGGLE DE ESTILO (NEÓN / CLÁSICO)
-   ============================================ */
 .toggle-container {
     display: flex;
     align-items: center;
@@ -1191,98 +1039,402 @@ body::before {
     font-style: italic;
 }
 
-/* ============================================
-   MODO CLÁSICO (cuando el toggle está activado)
-   ============================================ */
-body.modo-clasico .login-card,
-body.modo-clasico .main-content,
-body.modo-clasico .modal-content,
-body.modo-clasico .stat-card,
-body.modo-clasico .application-card,
-body.modo-clasico .setting-card {
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-body.modo-clasico .nav-item.active {
-    background: rgba(108, 60, 224, 0.15);
-    color: #a78bfa;
-}
-
-body.modo-clasico .stat-info h3 {
-    color: #a78bfa;
-    text-shadow: none;
-}
-
-body.modo-clasico .btn,
-body.modo-clasico .submit-btn,
-body.modo-clasico .token-btn,
-body.modo-clasico .action-btn {
-    background: #6c3ce0;
-    color: white;
-}
-
-body.modo-clasico .accept-btn {
-    background: #4ade80;
+.action-button {
+    padding: 0.6rem 1.5rem;
+    background: var(--neon-cyan);
     color: #000;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: var(--transition);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
 }
 
-body.modo-clasico .reject-btn {
-    background: #f87171;
-    color: #fff;
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(0, 245, 255, 0.2);
 }
 
-body.modo-clasico .step.active {
-    background: #6c3ce0;
+/* ============================================
+   ============================================
+   ============================================
+   MODO LIVIANO (ACTIVADO POR EL TOGGLE)
+   ============================================
+   ============================================
+   ============================================ */
+body.modo-liviano {
+    /* Desactivar efectos pesados */
+    --blur-amount: 0px;
 }
 
-body.modo-clasico .nav-item:hover {
-    border-left-color: #6c3ce0;
+body.modo-liviano .mask-icon {
+    filter: none !important;
+    animation: none !important;
 }
 
-body.modo-clasico .mask-icon {
-    filter: none;
+body.modo-liviano .header h1,
+body.modo-liviano .login-header h1,
+body.modo-liviano .panel-header h1,
+body.modo-liviano .sidebar-header h2 {
+    background: none !important;
+    -webkit-text-fill-color: #f0f0ff !important;
+    color: #f0f0ff !important;
+    filter: none !important;
+    text-shadow: none !important;
 }
 
-body.modo-clasico .header h1 {
-    background: linear-gradient(135deg, #6c3ce0, #a78bfa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+body.modo-liviano .login-card,
+body.modo-liviano .main-content,
+body.modo-liviano .modal-content,
+body.modo-liviano .stat-card,
+body.modo-liviano .application-card,
+body.modo-liviano .setting-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    background: rgba(18, 18, 30, 0.95) !important;
 }
 
-body.modo-clasico .subtitle {
-    color: #a78bfa;
+body.modo-liviano .sidebar {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(10, 10, 15, 0.98) !important;
 }
 
-body.modo-clasico .section-number {
-    color: #6c3ce0;
-    text-shadow: none;
+body.modo-liviano .modal-header,
+body.modo-liviano .modal-footer {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
-body.modo-clasico input:focus,
-body.modo-clasico select:focus,
-body.modo-clasico textarea:focus {
-    border-color: #6c3ce0;
-    box-shadow: 0 0 0 4px rgba(108, 60, 224, 0.05);
+body.modo-liviano .stat-info h3 {
+    color: #a78bfa !important;
+    text-shadow: none !important;
 }
 
-body.modo-clasico .radio-label input:checked + .radio-custom {
-    border-color: #6c3ce0;
-    background: #6c3ce0;
+body.modo-liviano .nav-item.active {
+    background: rgba(108, 60, 224, 0.1) !important;
+    color: #a78bfa !important;
+    border: 1px solid rgba(108, 60, 224, 0.2) !important;
+    box-shadow: none !important;
 }
 
-body.modo-clasico .checkbox-label input:checked + .checkbox-custom {
-    border-color: #6c3ce0;
-    background: #6c3ce0;
+body.modo-liviano .nav-item:hover {
+    background: rgba(108, 60, 224, 0.04) !important;
+    border-left-color: #6c3ce0 !important;
 }
 
-body.modo-clasico .staff-btn {
-    background: rgba(108, 60, 224, 0.1);
-    border-color: rgba(108, 60, 224, 0.2);
+body.modo-liviano .token-btn,
+body.modo-liviano .submit-btn,
+body.modo-liviano .save-review-btn {
+    background: #6c3ce0 !important;
+    color: white !important;
+    box-shadow: none !important;
 }
 
-body.modo-clasico .staff-btn:hover {
-    background: #6c3ce0;
-    color: white;
+body.modo-liviano .token-btn:hover,
+body.modo-liviano .submit-btn:hover,
+body.modo-liviano .save-review-btn:hover {
+    background: #5a2fd0 !important;
+    box-shadow: none !important;
+}
+
+body.modo-liviano .accept-btn {
+    background: #4ade80 !important;
+    color: #000 !important;
+}
+
+body.modo-liviano .reject-btn {
+    background: #f87171 !important;
+    color: #fff !important;
+}
+
+body.modo-liviano .login-card h2,
+body.modo-liviano .detail-label,
+body.modo-liviano .setting-card h3,
+body.modo-liviano .modal-header h2 {
+    color: #a78bfa !important;
+    text-shadow: none !important;
+}
+
+body.modo-liviano .step.active {
+    background: #6c3ce0 !important;
+    box-shadow: none !important;
+}
+
+body.modo-liviano .step.completed {
+    background: #4ade80 !important;
+}
+
+body.modo-liviano .stat-card:hover,
+body.modo-liviano .application-card:hover {
+    box-shadow: none !important;
+    border-color: #6c3ce0 !important;
+}
+
+body.modo-liviano .staff-btn {
+    background: rgba(108, 60, 224, 0.1) !important;
+    border: 1px solid rgba(108, 60, 224, 0.2) !important;
+    box-shadow: none !important;
+}
+
+body.modo-liviano .staff-btn:hover {
+    background: #6c3ce0 !important;
+    color: white !important;
+    box-shadow: none !important;
+}
+
+body.modo-liviano .application-card {
+    border-left: 3px solid rgba(108, 60, 224, 0.2) !important;
+}
+
+body.modo-liviano .application-card:hover {
+    border-color: #6c3ce0 !important;
+}
+
+body.modo-liviano .badge {
+    background: #f87171 !important;
+    color: white !important;
+}
+
+body.modo-liviano .user-role {
+    color: #a78bfa !important;
+}
+
+body.modo-liviano .logout-btn {
+    background: rgba(248, 113, 113, 0.05) !important;
+    border-color: rgba(248, 113, 113, 0.2) !important;
+    color: #f87171 !important;
+}
+
+body.modo-liviano .logout-btn:hover {
+    background: #f87171 !important;
+    color: white !important;
+    box-shadow: none !important;
+}
+
+body.modo-liviano .toggle-switch input:checked + .toggle-slider {
+    background: #6c3ce0 !important;
+    box-shadow: none !important;
+}
+
+body.modo-liviano .action-button {
+    background: #6c3ce0 !important;
+    color: white !important;
+}
+
+body.modo-liviano .action-button:hover {
+    background: #5a2fd0 !important;
+    box-shadow: none !important;
+}
+
+body.modo-liviano .refresh-btn:hover {
+    background: rgba(108, 60, 224, 0.08) !important;
+    border-color: #6c3ce0 !important;
+}
+
+body.modo-liviano .search-box input:focus {
+    border-color: #6c3ce0 !important;
+    box-shadow: none !important;
+}
+
+body.modo-liviano .token-input-group input:focus {
+    border-color: #6c3ce0 !important;
+    box-shadow: none !important;
+}
+
+body.modo-liviano input:focus,
+body.modo-liviano select:focus,
+body.modo-liviano textarea:focus {
+    border-color: #6c3ce0 !important;
+    box-shadow: none !important;
+}
+
+body.modo-liviano .radio-label input:checked + .radio-custom {
+    border-color: #6c3ce0 !important;
+    background: #6c3ce0 !important;
+}
+
+body.modo-liviano .checkbox-label input:checked + .checkbox-custom {
+    border-color: #6c3ce0 !important;
+    background: #6c3ce0 !important;
+}
+
+/* Eliminar animaciones pesadas en modo liviano */
+body.modo-liviano .sidebar-logo,
+body.modo-liviano .mask-icon {
+    animation: none !important;
+}
+
+body.modo-liviano .view {
+    animation: none !important;
+}
+
+body.modo-liviano .stat-card:hover {
+    transform: none !important;
+}
+
+body.modo-liviano .application-card:hover {
+    transform: none !important;
+}
+
+body.modo-liviano .nav-item:hover {
+    transform: none !important;
+}
+
+body.modo-liviano .token-btn:hover,
+body.modo-liviano .submit-btn:hover {
+    transform: none !important;
+}
+
+/* Eliminar gradientes de fondo en modo liviano */
+body.modo-liviano::before {
+    opacity: 0 !important;
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    }
+    .sidebar-close-btn {
+        display: block;
+    }
+    .main-panel {
+        margin-left: 0;
+        padding: 1.2rem;
+    }
+    .mobile-menu-btn {
+        display: block;
+    }
+    .search-box input {
+        width: 140px;
+    }
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+    .stat-card {
+        padding: 1rem;
+    }
+    .stat-info h3 {
+        font-size: 1.4rem;
+    }
+    .modal-actions {
+        flex-direction: column;
+    }
+    .login-card {
+        padding: 1.5rem;
+    }
+    .panel-header h1 {
+        font-size: 1.2rem;
+    }
+    .toggle-container {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-panel {
+        padding: 0.8rem;
+    }
+    .panel-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+    }
+    .header-right {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .search-box input {
+        width: 100%;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+    }
+    .stat-card {
+        padding: 0.8rem;
+    }
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+    .stat-info h3 {
+        font-size: 1.1rem;
+    }
+    .login-header h1 {
+        font-size: 2rem;
+        letter-spacing: 4px;
+    }
+    .application-card {
+        padding: 0.8rem 1rem;
+    }
+    .app-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+    .modal-content {
+        max-height: 95vh;
+    }
+    .modal-header,
+    .modal-footer {
+        padding: 1rem;
+    }
+    .modal-body {
+        padding: 1rem;
+    }
 }
