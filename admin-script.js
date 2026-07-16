@@ -2,7 +2,7 @@
 // CONFIGURACIÓN
 // ============================================
 const CONFIG = {
-    staffIds: ['TU_ID_DE_DISCORD'],  // <-- CAMBIA ESTO POR TU ID
+    staffIds: ['TU_ID_DE_DISCORD'],
     staffToken: 'LosEnmascarados2024_Secure',
     authKey: 'enmascarados_admin_auth'
 };
@@ -128,7 +128,6 @@ async function fetchApplications() {
         
         state.applications = data || [];
         console.log('✅ Cargadas:', state.applications.length, 'postulaciones');
-        console.log('📋 IDs en state:', state.applications.map(a => a.id));
         refreshDashboard();
         
     } catch (error) {
@@ -178,7 +177,7 @@ function displayApplications(containerId, apps) {
     }
     
     container.innerHTML = apps.map(app => `
-        <div class="application-card" onclick="openApplicationDetail('${app.id}')">
+        <div class="application-card" data-id="${app.id}">
             <div class="app-header">
                 <div class="app-user">
                     <div class="app-avatar">${(app.discord_nick || '?')[0]}</div>
@@ -210,22 +209,22 @@ function formatDate(date) {
 }
 
 // ============================================
-// DETALLE Y REVISIÓN (CORREGIDO)
+// DETALLE Y REVISIÓN
 // ============================================
 function openApplicationDetail(appId) {
-    console.log('📂 Abriendo detalle de:', appId);
+    console.log('📂 Abriendo detalle de ID:', appId);
     
-    // 🔥 CONVERTIR A NÚMERO siempre
+    // 🔥 CONVERTIR A NÚMERO
     const id = Number(appId);
     console.log('🔍 Buscando ID (número):', id);
-    console.log('📋 IDs en state:', state.applications.map(a => a.id));
     
-    // Buscar con comparación estricta (número contra número)
+    // Buscar por ID (comparación estricta)
     const app = state.applications.find(a => a.id === id);
     
     if (!app) {
         console.error('❌ Postulación no encontrada');
-        alert('Error: No se encontró la postulación');
+        console.log('📋 IDs disponibles:', state.applications.map(a => a.id));
+        alert('Error: No se encontró la postulación con ID ' + id);
         return;
     }
     
@@ -304,7 +303,7 @@ async function reviewApplication(status) {
         
         closeModal();
         alert(`Postulación ${status === 'accepted' ? 'aceptada ✅' : 'rechazada ❌'}`);
-        fetchApplications(); // Recargar lista
+        fetchApplications();
         
     } catch (error) {
         alert('Error al guardar la revisión: ' + error.message);
@@ -367,9 +366,11 @@ function exportToCSV() {
 }
 
 // ============================================
-// EVENTOS
+// EVENTOS (SIN DUPLICACIÓN)
 // ============================================
 function setupEventListeners() {
+    console.log('🔧 Configurando eventos...');
+    
     // Login
     document.getElementById('tokenLoginBtn').addEventListener('click', loginWithToken);
     document.getElementById('idLoginBtn').addEventListener('click', loginWithId);
@@ -394,6 +395,16 @@ function setupEventListeners() {
     });
     document.getElementById('acceptAppBtn').addEventListener('click', () => reviewApplication('accepted'));
     document.getElementById('rejectAppBtn').addEventListener('click', () => reviewApplication('rejected'));
+    
+    // 🔥 EVENTOS DE CLICK EN TARJETAS (UN SOLO LUGAR)
+    document.addEventListener('click', function(e) {
+        const card = e.target.closest('.application-card');
+        if (card) {
+            const id = card.dataset.id;
+            console.log('🖱️ Click en tarjeta con ID:', id);
+            openApplicationDetail(id);
+        }
+    });
     
     // Búsqueda
     document.getElementById('searchApps').addEventListener('input', e => {
