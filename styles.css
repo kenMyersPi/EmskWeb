@@ -2,19 +2,17 @@
    VARIABLES Y RESET
    ============================================ */
 :root {
-    --primary-color: #6c3ce0;
+    --primary: #6c3ce0;
     --primary-hover: #5a2fd0;
-    --secondary-color: #2a2a3e;
-    --background: #1a1a2e;
+    --bg: #1a1a2e;
     --card-bg: #16213e;
-    --text-primary: #ffffff;
+    --text: #ffffff;
     --text-secondary: #a0a0b8;
     --input-bg: #1e2a4a;
-    --input-border: #2a3a5e;
-    --input-focus: #6c3ce0;
-    --success-color: #4ade80;
-    --error-color: #f87171;
-    --warning-color: #fbbf24;
+    --border: #2a3a5e;
+    --success: #4ade80;
+    --error: #f87171;
+    --warning: #fbbf24;
 }
 
 * {
@@ -26,14 +24,10 @@
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    color: var(--text-primary);
+    color: var(--text);
     min-height: 100vh;
-    line-height: 1.6;
 }
 
-/* ============================================
-   CONTENEDOR PRINCIPAL
-   ============================================ */
 .container {
     max-width: 800px;
     margin: 0 auto;
@@ -41,7 +35,7 @@ body {
 }
 
 /* ============================================
-   BOTÓN DE STAFF
+   BOTÓN STAFF
    ============================================ */
 .staff-corner {
     position: fixed;
@@ -52,28 +46,23 @@ body {
 
 .staff-btn {
     background: rgba(108, 60, 224, 0.2);
-    border: 1px solid var(--primary-color);
-    color: var(--text-primary);
+    border: 1px solid var(--primary);
+    color: var(--text);
     padding: 0.5rem 1rem;
     border-radius: 20px;
     cursor: pointer;
     font-family: 'Poppins', sans-serif;
-    font-size: 0.85rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
     backdrop-filter: blur(10px);
 }
 
 .staff-btn:hover {
-    background: var(--primary-color);
+    background: var(--primary);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(108, 60, 224, 0.4);
-}
-
-.staff-icon {
-    font-size: 1rem;
 }
 
 /* ============================================
@@ -82,7 +71,6 @@ body {
 .header {
     text-align: center;
     margin-bottom: 2rem;
-    animation: fadeInDown 0.8s ease-out;
 }
 
 .logo-container {
@@ -104,7 +92,6 @@ body {
     background: linear-gradient(135deg, #6c3ce0, #a78bfa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .subtitle {
@@ -122,7 +109,7 @@ body {
 }
 
 /* ============================================
-   BARRA DE PROGRESO
+   PROGRESO
    ============================================ */
 .progress-container {
     margin-bottom: 2rem;
@@ -130,7 +117,7 @@ body {
 
 .progress-bar {
     height: 4px;
-    background: var(--input-border);
+    background: var(--border);
     border-radius: 2px;
     margin-bottom: 1rem;
     transition: width 0.5s ease;
@@ -150,7 +137,7 @@ body {
     left: 0;
     right: 0;
     height: 2px;
-    background: var(--input-border);
+    background: var(--border);
     z-index: 0;
     transform: translateY(-50%);
 }
@@ -160,47 +147,43 @@ body {
     height: 40px;
     border-radius: 50%;
     background: var(--input-bg);
-    border: 2px solid var(--input-border);
+    border: 2px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 0.9rem;
     color: var(--text-secondary);
     position: relative;
     z-index: 1;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
 }
 
 .step.active {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
+    background: var(--primary);
+    border-color: var(--primary);
     color: white;
     box-shadow: 0 0 20px rgba(108, 60, 224, 0.5);
 }
 
 .step.completed {
-    background: var(--success-color);
-    border-color: var(--success-color);
+    background: var(--success);
+    border-color: var(--success);
     color: white;
 }
 
 /* ============================================
-   FORMULARIO PRINCIPAL
+   FORMULARIO
    ============================================ */
 .main-content {
     background: var(--card-bg);
     border-radius: 20px;
     padding: 2.5rem;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: fadeInUp 0.8s ease-out;
 }
 
 .form-section {
     display: none;
-    animation: fadeIn 0.5s ease;
 }
 
 .form-section.active {
@@ -219,26 +202,20 @@ body {
 .section-number {
     font-size: 2rem;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--primary-color), #a78bfa);
+    background: linear-gradient(135deg, var(--primary), #a78bfa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .section-header h2 {
     font-size: 1.5rem;
-    color: var(--text-primary);
 }
 
 /* ============================================
-   GRUPOS DE FORMULARIO
+   GRUPOS
    ============================================ */
 .form-group {
     margin-bottom: 1.5rem;
-}
-
-.form-group:last-child {
-    margin-bottom: 0;
 }
 
 label {
@@ -247,18 +224,9 @@ label {
     gap: 0.5rem;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    font-size: 0.95rem;
-    color: var(--text-primary);
     cursor: pointer;
 }
 
-.label-icon {
-    font-size: 1.2rem;
-}
-
-/* ============================================
-   INPUTS, SELECTS Y TEXTAREAS
-   ============================================ */
 input[type="text"],
 input[type="number"],
 select,
@@ -266,42 +234,28 @@ textarea {
     width: 100%;
     padding: 1rem 1.2rem;
     background: var(--input-bg);
-    border: 2px solid var(--input-border);
+    border: 2px solid var(--border);
     border-radius: 12px;
-    color: var(--text-primary);
+    color: var(--text);
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
-    transition: all 0.3s ease;
-    resize: vertical;
+    transition: all 0.3s;
 }
 
-input[type="text"]:focus,
-input[type="number"]:focus,
+input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: var(--input-focus);
+    border-color: var(--primary);
     box-shadow: 0 0 0 4px rgba(108, 60, 224, 0.1);
-    background: #243352;
-}
-
-input[type="text"]::placeholder,
-textarea::placeholder {
-    color: #5a6a8a;
 }
 
 select {
-    cursor: pointer;
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a0a0b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     padding-right: 2.5rem;
-}
-
-select option {
-    background: var(--input-bg);
-    color: var(--text-primary);
 }
 
 .helper-text {
@@ -311,20 +265,10 @@ select option {
     color: var(--text-secondary);
 }
 
-.char-count {
-    display: block;
-    text-align: right;
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    transition: color 0.3s;
-}
-
 /* ============================================
-   RADIO Y CHECKBOX PERSONALIZADOS
+   RADIO Y CHECKBOX
    ============================================ */
-.radio-group,
-.checkbox-group {
+.radio-group {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
@@ -338,48 +282,48 @@ select option {
     cursor: pointer;
     padding: 0.8rem;
     background: var(--input-bg);
-    border: 1px solid var(--input-border);
+    border: 1px solid var(--border);
     border-radius: 10px;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
 }
 
 .radio-label:hover,
 .checkbox-label:hover {
-    border-color: var(--primary-color);
+    border-color: var(--primary);
     background: #243352;
 }
 
-.radio-label input[type="radio"],
-.checkbox-label input[type="checkbox"] {
+.radio-label input,
+.checkbox-label input {
     display: none;
 }
 
 .radio-custom {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--input-border);
+    border: 2px solid var(--border);
     border-radius: 50%;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
     flex-shrink: 0;
 }
 
 .checkbox-custom {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--input-border);
+    border: 2px solid var(--border);
     border-radius: 4px;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
     flex-shrink: 0;
 }
 
-.radio-label input[type="radio"]:checked + .radio-custom {
-    border-color: var(--primary-color);
-    background: var(--primary-color);
+.radio-label input:checked + .radio-custom {
+    border-color: var(--primary);
+    background: var(--primary);
 }
 
-.radio-label input[type="radio"]:checked + .radio-custom::after {
+.radio-label input:checked + .radio-custom::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -391,12 +335,12 @@ select option {
     border-radius: 50%;
 }
 
-.checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
-    border-color: var(--primary-color);
-    background: var(--primary-color);
+.checkbox-label input:checked + .checkbox-custom {
+    border-color: var(--primary);
+    background: var(--primary);
 }
 
-.checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
+.checkbox-label input:checked + .checkbox-custom::after {
     content: '✓';
     position: absolute;
     top: 50%;
@@ -408,56 +352,42 @@ select option {
 }
 
 .terms {
-    padding: 1rem;
     background: rgba(108, 60, 224, 0.1);
     border: 1px solid rgba(108, 60, 224, 0.3);
 }
 
 .terms strong {
-    color: var(--primary-color);
+    color: var(--primary);
 }
 
 /* ============================================
-   NAVEGACIÓN DEL FORMULARIO
+   NAVEGACIÓN
    ============================================ */
 .form-navigation {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     margin-top: 2rem;
     gap: 1rem;
 }
 
 .nav-btn {
     padding: 0.8rem 1.5rem;
-    border: 2px solid var(--input-border);
+    border: 2px solid var(--border);
     background: transparent;
-    color: var(--text-primary);
+    color: var(--text);
     border-radius: 10px;
-    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
     font-family: 'Poppins', sans-serif;
 }
 
 .nav-btn:hover {
-    border-color: var(--primary-color);
+    border-color: var(--primary);
     background: rgba(108, 60, 224, 0.1);
     transform: translateY(-2px);
 }
 
-.next-btn {
-    margin-left: auto;
-}
-
-.prev-btn {
-    margin-right: auto;
-}
-
-/* ============================================
-   BOTÓN DE ENVÍO
-   ============================================ */
 .submit-btn {
     width: 100%;
     padding: 1.2rem;
@@ -468,39 +398,18 @@ select option {
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    position: relative;
-    overflow: hidden;
+    transition: all 0.3s;
     font-family: 'Poppins', sans-serif;
 }
 
 .submit-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 25px rgba(108, 60, 224, 0.4);
-    background: linear-gradient(135deg, #7c4fe0, #9b6cf6);
-}
-
-.submit-btn:active {
-    transform: translateY(0);
 }
 
 .submit-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    transform: none;
-}
-
-.btn-icon {
-    font-size: 1.2rem;
-    transition: transform 0.3s ease;
-}
-
-.submit-btn:hover .btn-icon {
-    transform: translateX(5px);
 }
 
 /* ============================================
@@ -511,25 +420,24 @@ select option {
     padding: 1rem 1.2rem;
     border-radius: 12px;
     font-weight: 500;
-    animation: slideIn 0.3s ease-out;
 }
 
 .message-container.success {
     background: rgba(74, 222, 128, 0.1);
-    border: 1px solid var(--success-color);
-    color: var(--success-color);
+    border: 1px solid var(--success);
+    color: var(--success);
 }
 
 .message-container.error {
     background: rgba(248, 113, 113, 0.1);
-    border: 1px solid var(--error-color);
-    color: var(--error-color);
+    border: 1px solid var(--error);
+    color: var(--error);
 }
 
 .message-container.warning {
     background: rgba(251, 191, 36, 0.1);
-    border: 1px solid var(--warning-color);
-    color: var(--warning-color);
+    border: 1px solid var(--warning);
+    color: var(--warning);
 }
 
 .message-container.hidden {
@@ -546,195 +454,31 @@ select option {
     font-size: 0.85rem;
 }
 
-.footer-note {
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
-}
-
 /* ============================================
    ANIMACIONES
    ============================================ */
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
 @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes confettiFall {
-    to {
-        transform: translateY(100vh) rotate(720deg);
-        opacity: 0;
-    }
-}
-
-/* ============================================
-   ESTADOS DE CARGA
-   ============================================ */
-.loading .submit-btn {
-    position: relative;
-    pointer-events: none;
-}
-
-.loading .btn-text {
-    opacity: 0;
-}
-
-.loading .btn-icon::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid transparent;
-    border-top: 2px solid white;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
 }
 
 /* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {
-    .container {
-        padding: 1rem;
-    }
-    
-    .main-content {
-        padding: 1.5rem;
-    }
-    
-    .header h1 {
-        font-size: 2rem;
-    }
-    
-    .mask-icon {
-        font-size: 2.5rem;
-    }
-    
-    .section-header h2 {
-        font-size: 1.2rem;
-    }
-    
-    .section-number {
-        font-size: 1.5rem;
-    }
-    
-    input[type="text"],
-    input[type="number"],
-    select,
-    textarea {
-        padding: 0.8rem 1rem;
-    }
-    
-    .submit-btn {
-        padding: 1rem;
-        font-size: 1rem;
-    }
-    
-    .staff-corner {
-        top: 10px;
-        right: 10px;
-    }
-    
-    .staff-text {
-        display: none;
-    }
-    
-    .staff-btn {
-        padding: 0.5rem;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        justify-content: center;
-    }
-    
-    .form-navigation {
-        flex-direction: column;
-    }
-    
-    .nav-btn {
-        width: 100%;
-        text-align: center;
-    }
+    .container { padding: 1rem; }
+    .main-content { padding: 1.5rem; }
+    .header h1 { font-size: 2rem; }
+    .mask-icon { font-size: 2.5rem; }
+    .staff-text { display: none; }
+    .staff-btn { padding: 0.5rem; border-radius: 50%; width: 40px; height: 40px; justify-content: center; }
+    .form-navigation { flex-direction: column; }
+    .nav-btn { width: 100%; text-align: center; }
 }
 
 @media (max-width: 480px) {
-    .header h1 {
-        font-size: 1.5rem;
-    }
-    
-    .subtitle {
-        font-size: 0.8rem;
-    }
-    
-    .main-content {
-        padding: 1.2rem;
-    }
-    
-    .progress-steps {
-        gap: 0.5rem;
-    }
-    
-    .step {
-        width: 35px;
-        height: 35px;
-        font-size: 0.8rem;
-    }
-}
-
-/* ============================================
-   EXPERIENCE DETAILS
-   ============================================ */
-.experience-details {
-    animation: fadeIn 0.5s ease;
-}
-
-/* ============================================
-   VALIDACIÓN VISUAL
-   ============================================ */
-input.field-error,
-select.field-error,
-textarea.field-error {
-    border-color: var(--error-color) !important;
-    box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.2) !important;
+    .header h1 { font-size: 1.5rem; }
+    .subtitle { font-size: 0.8rem; }
+    .main-content { padding: 1.2rem; }
+    .step { width: 35px; height: 35px; font-size: 0.8rem; }
 }
