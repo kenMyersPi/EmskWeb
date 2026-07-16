@@ -2,19 +2,15 @@
 // CONFIGURACIÓN
 // ============================================
 const CONFIG = {
-    staffIds: ['TU_ID_DE_DISCORD'],  // <-- PON TU ID DE DISCORD AQUÍ
+    staffIds: ['TU_ID_DE_DISCORD'],  // <-- PON TU ID AQUÍ
     staffToken: 'LosEnmascarados2024_Secure',
     authKey: 'enmascarados_admin_auth'
 };
 
-// ============================================
-// ESTADO
-// ============================================
 const state = {
     isAuthenticated: false,
     currentUser: null,
     applications: [],
-    currentView: 'dashboard',
     currentApplicationId: null
 };
 
@@ -23,8 +19,6 @@ const state = {
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Panel Admin iniciado');
-    console.log('🟢 Supabase:', typeof supabase !== 'undefined' ? 'Conectado ✅' : 'Error ❌');
-    
     checkAuthentication();
     setupEventListeners();
 });
@@ -114,11 +108,9 @@ function loadApplications() {
 
 async function fetchApplications() {
     try {
-        const client = supabase || window.supabase;
+        const client = window.supabase;
         if (!client) {
             console.error('❌ Supabase no disponible');
-            document.getElementById('allAppsList').innerHTML = 
-                '<p class="empty-state">❌ Error: Supabase no conectado</p>';
             return;
         }
         
@@ -129,19 +121,14 @@ async function fetchApplications() {
         
         if (error) {
             console.error('❌ Error:', error);
-            document.getElementById('allAppsList').innerHTML = 
-                `<p class="empty-state">❌ Error: ${error.message}</p>`;
             return;
         }
         
         state.applications = data || [];
         console.log('✅ Cargadas:', state.applications.length);
         refreshDashboard();
-        
     } catch (error) {
         console.error('❌ Error:', error);
-        document.getElementById('allAppsList').innerHTML = 
-            `<p class="empty-state">❌ Error: ${error.message}</p>`;
     }
 }
 
@@ -232,7 +219,7 @@ function openApplicationDetail(appId) {
             <p><strong>Nick:</strong> ${app.discord_nick}</p>
             <p><strong>ID:</strong> ${app.discord_id}</p>
             <p><strong>Edad:</strong> ${app.age} años</p>
-            <p><strong>Zona Horaria:</strong> ${app.timezone}</p>
+            <p><strong>Zona:</strong> ${app.timezone}</p>
             <p><strong>Idiomas:</strong> ${app.languages}</p>
             <p><strong>Disponibilidad:</strong> ${app.availability}</p>
         </div>
@@ -252,11 +239,7 @@ function openApplicationDetail(appId) {
             <p><strong>Fortalezas:</strong> ${app.strengths || 'No especificadas'}</p>
             ${app.weaknesses ? `<p><strong>Áreas de mejora:</strong> ${app.weaknesses}</p>` : ''}
         </div>
-        ${app.review_notes ? `
-        <div class="detail-section">
-            <div class="detail-label">📝 Notas</div>
-            <p>${app.review_notes}</p>
-        </div>` : ''}
+        ${app.review_notes ? `<div class="detail-section"><div class="detail-label">📝 Notas</div><p>${app.review_notes}</p></div>` : ''}
     `;
     
     document.getElementById('reviewNotes').value = app.review_notes || '';
@@ -271,9 +254,9 @@ async function reviewApplication(status) {
     if (!state.currentApplicationId) return;
     
     const notes = document.getElementById('reviewNotes').value;
+    const client = window.supabase;
     
     try {
-        const client = supabase || window.supabase;
         const { error } = await client
             .from('postulaciones')
             .update({
@@ -292,7 +275,6 @@ async function reviewApplication(status) {
         closeModal();
         alert(`Postulación ${status === 'accepted' ? 'aceptada ✅' : 'rechazada ❌'}`);
         fetchApplications();
-        
     } catch (error) {
         alert('Error al guardar la revisión');
     }
@@ -306,22 +288,39 @@ function switchView(viewName) {
         item.classList.remove('active');
         if (item.dataset.view === viewName) item.classList.add('active');
     });
-    
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    
     const views = {
         'dashboard': 'dashboardView',
         'applications': 'applicationsView',
         'reviewed': 'reviewedView',
         'settings': 'settingsView'
     };
-    
-    if (views[viewName]) {
-        document.getElementById(views[viewName]).classList.add('active');
+    if (views[viewName]) document.getElementById(views[viewName]).classList.add('active');
+    document.getElementById('currentView').textContent = viewName.charAt(0).toUpperCase() + viewName.slice(1);
+}
+
+// ============================================
+// EXPORTAR CSV
+// ============================================
+function exportToCSV() {
+    if (state.applications.length === 0) {
+        alert('No hay postulaciones');
+        return;
     }
     
-    document.getElementById('currentView').textContent = viewName.charAt(0).toUpperCase() + viewName.slice(1);
-    state.currentView = viewName;
+    const headers = ['Nick', 'ID Discord', 'Edad', 'Zona', 'Idiomas', 'Exp', 'Motivación', 'Estado', 'Fecha'];
+    const rows = state.applications.map(app => [
+        app.discord_nick, app.discord_id, app.age, app.timezone,
+        app.languages, app.has_experience, app.motivation?.substring(0, 100),
+        getStatusText(app.status), formatDate(app.created_at)
+    ]);
+    
+    const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c || ''}"`).join(','))].join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `postulaciones_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
 }
 
 // ============================================
@@ -375,28 +374,4 @@ function setupEventListeners() {
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') closeModal();
     });
-}
-
-// ============================================
-// EXPORTAR CSV
-// ============================================
-function exportToCSV() {
-    if (state.applications.length === 0) {
-        alert('No hay postulaciones');
-        return;
-    }
-    
-    const headers = ['Nick', 'ID Discord', 'Edad', 'Zona', 'Idiomas', 'Exp', 'Motivación', 'Estado', 'Fecha'];
-    const rows = state.applications.map(app => [
-        app.discord_nick, app.discord_id, app.age, app.timezone,
-        app.languages, app.has_experience, app.motivation?.substring(0, 100),
-        getStatusText(app.status), formatDate(app.created_at)
-    ]);
-    
-    const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c || ''}"`).join(','))].join('\n');
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `postulaciones_${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
 }
