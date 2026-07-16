@@ -3,11 +3,11 @@
 // ============================================
 const CONFIG = {
     draftKey: 'enmascarados_draft',
-    cooldownTime: 300000 // 5 minutos entre envíos
+    cooldownTime: 300000
 };
 
 // ============================================
-// ESTADO GLOBAL
+// ESTADO
 // ============================================
 let currentSection = 1;
 const totalSections = 4;
@@ -15,13 +15,12 @@ let isSubmitting = false;
 let lastSubmissionTime = 0;
 
 // ============================================
-// CUANDO EL DOM ESTÉ LISTO
+// DOM LISTO
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM cargado');
-    console.log('🟢 Supabase:', typeof supabase !== 'undefined' ? 'Conectado ✅' : 'Error ❌');
     
-    // 🔥 OBTENER TODOS LOS ELEMENTOS CON VERIFICACIÓN
+    // Elementos
     const form = document.getElementById('postulacionForm');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -31,39 +30,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = document.querySelectorAll('.form-section');
     const steps = document.querySelectorAll('.step');
     
-    // 🔥 VERIFICAR QUE TODOS LOS ELEMENTOS EXISTAN
-    if (!form) console.error('❌ form no encontrado');
-    if (!prevBtn) console.error('❌ prevBtn no encontrado');
-    if (!nextBtn) console.error('❌ nextBtn no encontrado');
-    if (!submitBtn) console.error('❌ submitBtn no encontrado');
-    
     // ============================================
     // NAVEGACIÓN
     // ============================================
     function updateNavigation() {
-        // Botón "Anterior": solo visible desde la sección 2 en adelante
-        if (currentSection === 1) {
-            prevBtn.style.display = 'none';
-        } else {
-            prevBtn.style.display = 'inline-flex';
-        }
+        // Anterior
+        prevBtn.style.display = currentSection === 1 ? 'none' : 'inline-flex';
         
-        // Botón "Siguiente" y "Enviar"
+        // Siguiente / Enviar
         if (currentSection === totalSections) {
-            // Última sección: ocultar "Siguiente", mostrar "Enviar"
             nextBtn.style.display = 'none';
             submitBtn.style.display = 'flex';
         } else {
-            // Resto de secciones: mostrar "Siguiente", ocultar "Enviar"
             nextBtn.style.display = 'inline-flex';
             submitBtn.style.display = 'none';
         }
         
-        // Actualizar barra de progreso
+        // Barra de progreso
         const progress = ((currentSection - 1) / (totalSections - 1)) * 100;
         progressBar.style.width = progress + '%';
         
-        // Actualizar círculos de pasos
+        // Pasos
         steps.forEach((step, index) => {
             step.classList.remove('active', 'completed');
             if (index + 1 === currentSection) step.classList.add('active');
@@ -71,13 +58,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    function showSection(sectionNumber) {
+    function showSection(num) {
         sections.forEach(s => s.classList.remove('active'));
-        const target = document.querySelector(`[data-section="${sectionNumber}"]`);
-        if (target) {
-            target.classList.add('active');
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        const target = document.querySelector(`[data-section="${num}"]`);
+        if (target) target.classList.add('active');
     }
     
     function nextSection() {
@@ -85,41 +69,39 @@ document.addEventListener('DOMContentLoaded', function() {
             currentSection++;
             showSection(currentSection);
             updateNavigation();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
     
-    function previousSection() {
+    function prevSection() {
         if (currentSection > 1) {
             currentSection--;
             showSection(currentSection);
             updateNavigation();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
     
     // ============================================
     // VALIDACIONES
     // ============================================
-    function showError(elementId, message) {
-        const element = document.getElementById(elementId);
-        if (!element) return;
-        
-        element.style.borderColor = '#f87171';
-        const oldError = element.parentElement.querySelector('.field-error-msg');
-        if (oldError) oldError.remove();
-        
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'field-error-msg';
-        errorDiv.style.cssText = 'color:#f87171;font-size:0.8rem;margin-top:5px;';
-        errorDiv.textContent = '⚠️ ' + message;
-        element.parentElement.appendChild(errorDiv);
-        element.focus();
+    function showError(id, msg) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.borderColor = '#f87171';
+        const old = el.parentElement.querySelector('.field-error-msg');
+        if (old) old.remove();
+        const div = document.createElement('div');
+        div.className = 'field-error-msg';
+        div.style.cssText = 'color:#f87171;font-size:0.8rem;margin-top:5px;';
+        div.textContent = '⚠️ ' + msg;
+        el.parentElement.appendChild(div);
+        el.focus();
     }
     
     function clearErrors() {
         document.querySelectorAll('.field-error-msg').forEach(el => el.remove());
-        document.querySelectorAll('input, select, textarea').forEach(el => {
-            el.style.borderColor = '';
-        });
+        document.querySelectorAll('input, select, textarea').forEach(el => el.style.borderColor = '');
         messageContainer.classList.add('hidden');
     }
     
@@ -133,24 +115,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 showError('discordNick', 'Ingresa tu nick (mín. 2 caracteres)');
                 valid = false;
             }
-            
             const id = document.getElementById('discordId').value.trim();
             if (!id || !/^\d{17,19}$/.test(id)) {
                 showError('discordId', 'ID inválido (17-19 dígitos)');
                 valid = false;
             }
-            
             const age = document.getElementById('age').value;
             if (!age || age < 13 || age > 99) {
                 showError('age', 'Edad entre 13 y 99 años');
                 valid = false;
             }
-            
             if (!document.getElementById('timezone').value) {
                 showError('timezone', 'Selecciona tu zona horaria');
                 valid = false;
             }
-            
             if (!document.getElementById('languages').value.trim()) {
                 showError('languages', 'Indica los idiomas que hablas');
                 valid = false;
@@ -169,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     valid = false;
                 }
             }
-            
             if (!document.getElementById('availability').value) {
                 showError('availability', 'Selecciona tu disponibilidad');
                 valid = false;
@@ -182,13 +159,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 showError('scenario1', 'Desarrolla tu respuesta (mín. 20 caracteres)');
                 valid = false;
             }
-            
             const s2 = document.getElementById('scenario2').value.trim();
             if (!s2 || s2.length < 20) {
                 showError('scenario2', 'Desarrolla tu respuesta (mín. 20 caracteres)');
                 valid = false;
             }
-            
             if (!document.querySelector('input[name="discordRules"]:checked')) {
                 alert('⚠️ Indica tu conocimiento de las reglas');
                 valid = false;
@@ -201,13 +176,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 showError('motivation', 'Cuéntanos tu motivación (mín. 20 caracteres)');
                 valid = false;
             }
-            
             const strengths = document.getElementById('strengths').value.trim();
             if (!strengths || strengths.length < 10) {
                 showError('strengths', 'Indica tus fortalezas (mín. 10 caracteres)');
                 valid = false;
             }
-            
             if (!document.getElementById('termsAccepted').checked) {
                 alert('⚠️ Debes aceptar los términos');
                 valid = false;
@@ -218,12 +191,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // ============================================
-    // OBTENER DATOS DEL FORMULARIO
+    // DATOS
     // ============================================
     function getFormData() {
-        const tools = [];
-        document.querySelectorAll('input[name="tools"]:checked').forEach(cb => tools.push(cb.value));
-        
         return {
             discord_nick: document.getElementById('discordNick').value.trim(),
             discord_id: document.getElementById('discordId').value.trim(),
@@ -232,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
             languages: document.getElementById('languages').value.trim(),
             has_experience: document.querySelector('input[name="hasExperience"]:checked')?.value || 'no',
             experience_description: document.getElementById('experienceDescription').value.trim(),
-            tools: tools.join(', '),
             availability: document.getElementById('availability').value,
             scenario1: document.getElementById('scenario1').value.trim(),
             scenario2: document.getElementById('scenario2').value.trim(),
@@ -240,7 +209,6 @@ document.addEventListener('DOMContentLoaded', function() {
             motivation: document.getElementById('motivation').value.trim(),
             strengths: document.getElementById('strengths').value.trim(),
             weaknesses: document.getElementById('weaknesses').value.trim(),
-            additional_info: document.getElementById('additionalInfo')?.value.trim() || '',
             status: 'new',
             created_at: new Date().toISOString()
         };
@@ -249,29 +217,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     // GUARDAR EN SUPABASE
     // ============================================
-    async function saveToSupabase(formData) {
+    async function saveToSupabase(data) {
         console.log('🟢 Guardando en Supabase...');
-        console.log('📦 Datos:', formData);
-        
-        const client = supabase || window.supabase;
+        const client = window.supabase;
         if (!client) {
-            console.error('❌ Supabase no está disponible');
             return { success: false, error: 'Supabase no inicializado' };
         }
-        
         try {
-            const { data, error } = await client
+            const { data: result, error } = await client
                 .from('postulaciones')
-                .insert([formData])
+                .insert([data])
                 .select();
-            
             if (error) {
-                console.error('❌ Error Supabase:', error);
+                console.error('❌ Error:', error);
                 return { success: false, error: error.message };
             }
-            
-            console.log('✅ Guardado! ID:', data[0].id);
-            return { success: true, id: data[0].id };
+            console.log('✅ Guardado! ID:', result[0].id);
+            return { success: true, id: result[0].id };
         } catch (error) {
             console.error('❌ Error:', error);
             return { success: false, error: error.message };
@@ -279,79 +241,63 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // ============================================
-    // ENVIAR FORMULARIO
+    // ENVIAR
     // ============================================
-    async function handleSubmit(event) {
-        event.preventDefault();
-        console.log('📤 ===== ENVIANDO POSTULACIÓN =====');
+    async function handleSubmit(e) {
+        e.preventDefault();
+        console.log('📤 Enviando...');
         
-        if (!validateSection(4)) return false;
+        if (!validateSection(4)) return;
         
         const now = Date.now();
         if (now - lastSubmissionTime < CONFIG.cooldownTime && lastSubmissionTime > 0) {
-            const minutes = Math.ceil((CONFIG.cooldownTime - (now - lastSubmissionTime)) / 60000);
-            alert(`⏰ Espera ${minutes} minutos para enviar otra vez.`);
-            return false;
+            const mins = Math.ceil((CONFIG.cooldownTime - (now - lastSubmissionTime)) / 60000);
+            alert(`⏰ Espera ${mins} minutos`);
+            return;
         }
         
-        if (isSubmitting) return false;
-        
+        if (isSubmitting) return;
         isSubmitting = true;
-        const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.6';
-        const originalText = submitBtn.textContent;
         submitBtn.textContent = '⏳ Enviando...';
         
         try {
-            const formData = getFormData();
-            console.log('📦 Datos del formulario:', formData);
-            
-            const result = await saveToSupabase(formData);
+            const data = getFormData();
+            const result = await saveToSupabase(data);
             
             if (result.success) {
-                const messageContainer = document.getElementById('messageContainer');
-                messageContainer.innerHTML = '✅ ¡Postulación enviada con éxito!<br>🟢 Se guardó en Supabase.';
+                messageContainer.innerHTML = '✅ ¡Postulación enviada! Se guardó en Supabase.';
                 messageContainer.className = 'message-container success';
                 messageContainer.classList.remove('hidden');
-                
-                document.getElementById('postulacionForm').reset();
+                form.reset();
                 localStorage.removeItem(CONFIG.draftKey);
                 lastSubmissionTime = Date.now();
-                
                 currentSection = 1;
                 showSection(1);
                 updateNavigation();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                alert('🎉 ¡Postulación enviada!\n\nLos administradores la revisarán pronto.');
+                alert('🎉 ¡Postulación enviada!');
             } else {
-                throw new Error(result.error || 'Error al guardar');
+                throw new Error(result.error);
             }
-            
         } catch (error) {
             console.error('❌ Error:', error);
-            const messageContainer = document.getElementById('messageContainer');
-            messageContainer.textContent = '❌ Error al enviar: ' + error.message;
+            messageContainer.textContent = '❌ Error: ' + error.message;
             messageContainer.className = 'message-container error';
             messageContainer.classList.remove('hidden');
-            alert('❌ Error: ' + error.message);
         } finally {
             setTimeout(() => {
                 isSubmitting = false;
                 submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                submitBtn.textContent = originalText;
+                submitBtn.textContent = 'Enviar Postulación 📤';
             }, 2000);
         }
-        
-        return false;
     }
     
     // ============================================
     // UTILIDADES
     // ============================================
-    function toggleExperienceDetails() {
+    function toggleExperience() {
         const hasExp = document.querySelector('input[name="hasExperience"]:checked');
         const details = document.getElementById('experienceDetails');
         details.style.display = (hasExp && hasExp.value === 'si') ? 'block' : 'none';
@@ -379,73 +325,34 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.timezone) document.getElementById('timezone').value = data.timezone;
             if (data.languages) document.getElementById('languages').value = data.languages;
             console.log('📂 Borrador cargado');
-            
-            const messageContainer = document.getElementById('messageContainer');
-            messageContainer.textContent = '📝 Se cargó un borrador guardado';
-            messageContainer.className = 'message-container warning';
-            messageContainer.classList.remove('hidden');
-            setTimeout(() => messageContainer.classList.add('hidden'), 3000);
         } catch (e) {
             console.error('Error al cargar borrador:', e);
         }
     }
     
     // ============================================
-    // EVENTOS (CON VERIFICACIÓN)
+    // EVENTOS
     // ============================================
-    console.log('🔧 Configurando eventos...');
+    prevBtn.addEventListener('click', prevSection);
+    nextBtn.addEventListener('click', nextSection);
+    form.addEventListener('submit', handleSubmit);
     
-    // 🔥 VERIFICAR QUE LOS BOTONES EXISTAN ANTES DE AGREGAR EVENTOS
-    if (prevBtn) {
-        prevBtn.addEventListener('click', previousSection);
-        console.log('✅ prevBtn configurado');
-    } else {
-        console.error('❌ prevBtn no encontrado');
-    }
-    
-    if (nextBtn) {
-        nextBtn.addEventListener('click', nextSection);
-        console.log('✅ nextBtn configurado');
-    } else {
-        console.error('❌ nextBtn no encontrado');
-    }
-    
-    if (form) {
-        form.addEventListener('submit', handleSubmit);
-        console.log('✅ form configurado');
-    }
-    
-    // Mostrar/ocultar experiencia
-    document.querySelectorAll('input[name="hasExperience"]').forEach(radio => {
-        radio.addEventListener('change', toggleExperienceDetails);
+    document.querySelectorAll('input[name="hasExperience"]').forEach(r => {
+        r.addEventListener('change', toggleExperience);
     });
     
-    // Botón de Staff (abre admin panel)
-    const staffBtn = document.getElementById('staffLoginBtn');
-    if (staffBtn) {
-        staffBtn.addEventListener('click', function() {
-            window.open('admin.html', '_blank');
-        });
-    }
+    document.getElementById('staffLoginBtn').addEventListener('click', function() {
+        window.open('admin.html', '_blank');
+    });
     
-    // Guardar borrador automáticamente
-    if (form) {
-        form.addEventListener('input', function() {
-            clearTimeout(window._draftTimeout);
-            window._draftTimeout = setTimeout(saveDraft, 2000);
-        });
-    }
+    form.addEventListener('input', function() {
+        clearTimeout(window._draftTimeout);
+        window._draftTimeout = setTimeout(saveDraft, 2000);
+    });
     
-    // Atajos de teclado
     document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'ArrowRight') {
-            e.preventDefault();
-            nextSection();
-        }
-        if (e.ctrlKey && e.key === 'ArrowLeft') {
-            e.preventDefault();
-            previousSection();
-        }
+        if (e.ctrlKey && e.key === 'ArrowRight') { e.preventDefault(); nextSection(); }
+        if (e.ctrlKey && e.key === 'ArrowLeft') { e.preventDefault(); prevSection(); }
     });
     
     // ============================================
@@ -453,7 +360,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     updateNavigation();
     loadDraft();
-    console.log('✅ Formulario listo con Supabase');
+    console.log('✅ Formulario listo');
 });
-
-console.log('📄 script.js cargado');
