@@ -442,25 +442,28 @@ function setupEventListeners() {
 }
 
 // ============================================
-// TOGGLE DE ESTILO (NEÓN / CLÁSICO)
+// TOGGLE DE ESTILO (NEÓN / LIVIANO)
 // ============================================
 function setupStyleToggle() {
     const toggle = document.getElementById('styleToggle');
     if (!toggle) return;
     
+    // Cargar preferencia guardada
     const savedStyle = localStorage.getItem('adminStyle');
-    if (savedStyle === 'clasico') {
+    if (savedStyle === 'liviano') {
         toggle.checked = true;
-        document.body.classList.add('modo-clasico');
+        document.body.classList.add('modo-liviano');
     }
     
     toggle.addEventListener('change', function() {
         if (this.checked) {
-            document.body.classList.add('modo-clasico');
-            localStorage.setItem('adminStyle', 'clasico');
+            document.body.classList.add('modo-liviano');
+            localStorage.setItem('adminStyle', 'liviano');
+            console.log('🎨 Modo Liviano activado');
         } else {
-            document.body.classList.remove('modo-clasico');
+            document.body.classList.remove('modo-liviano');
             localStorage.setItem('adminStyle', 'neon');
+            console.log('🎨 Modo Neón activado');
         }
     });
 }
@@ -479,6 +482,7 @@ function setupSidebarClose() {
         });
     }
     
+    // Cerrar sidebar al hacer clic fuera de él (en móvil)
     document.addEventListener('click', function(e) {
         if (window.innerWidth <= 768) {
             const isClickInside = sidebar && sidebar.contains(e.target);
